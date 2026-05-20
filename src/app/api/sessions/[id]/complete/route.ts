@@ -14,10 +14,23 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   if (!workoutSession) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
 
+  // Block completing future sessions (allow unchecking regardless)
+  if (!workoutSession.completed) {
+    const todayIndex = ((new Date().getDay() + 6) % 7); // 0=Mon … 6=Sun
+    if (workoutSession.dayOfWeek > todayIndex) {
+      return NextResponse.json({ error: "Cette séance n'est pas encore disponible" }, { status: 403 });
+    }
+  }
+
+  const newState = !workoutSession.completed;
+
   await prisma.workoutSession.update({
     where: { id },
-    data: { completed: true, completedAt: new Date() },
+    data: {
+      completed: newState,
+      completedAt: newState ? new Date() : null,
+    },
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ completed: newState });
 }

@@ -5,14 +5,20 @@ import { z } from "zod";
 
 const schema = z.object({ weight: z.number().min(20).max(300) });
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
+  const { searchParams } = new URL(req.url);
+  const days = Math.min(Number(searchParams.get("days") ?? "90"), 365);
+
+  const from = new Date();
+  from.setUTCHours(0, 0, 0, 0);
+  from.setDate(from.getDate() - (days - 1));
+
   const logs = await prisma.weightLog.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, date: { gte: from } },
     orderBy: { date: "asc" },
-    take: 90,
   });
 
   return NextResponse.json(logs);

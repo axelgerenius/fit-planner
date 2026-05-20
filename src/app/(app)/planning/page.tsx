@@ -120,11 +120,9 @@ export default async function PlanningPage() {
                       </div>
                     ))}
                   </div>
-                  {!s.completed && (
-                    <div className="mt-3">
-                      <CompleteSessionButton sessionId={s.id} />
-                    </div>
-                  )}
+                  <div className="mt-3">
+                    <CompleteSessionButton sessionId={s.id} completed={s.completed} isFuture={s.dayOfWeek > todayIndex} />
+                  </div>
                 </>
               )}
             </div>

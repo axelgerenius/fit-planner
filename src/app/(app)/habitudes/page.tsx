@@ -7,6 +7,24 @@ const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Ne
 
 const EMOJI_OPTIONS = ["✅", "💧", "🏃", "🥗", "😴", "📚", "🧘", "🚭", "🥤", "🍎", "💪", "🧹", "🌅", "🚶", "🎯"];
 
+const QUOTES = [
+  { text: "Nous sommes ce que nous faisons de manière répétée. L'excellence n'est donc pas un acte, mais une habitude.", author: "Aristote" },
+  { text: "Le secret de votre futur se cache dans votre routine quotidienne.", author: "Mike Murdock" },
+  { text: "Motivez-vous avec des objectifs. Créez des habitudes pour y parvenir.", author: "Anonymous" },
+  { text: "Les gens ne décident pas de leur avenir, ils décident de leurs habitudes, et leurs habitudes décident de leur avenir.", author: "F. M. Alexander" },
+  { text: "Un homme en bonne santé veut dix mille choses, un homme malade n'en veut qu'une.", author: "Confucius" },
+  { text: "Prends soin de ton corps. C'est le seul endroit où tu dois vivre.", author: "Jim Rohn" },
+  { text: "La discipline est le pont entre les objectifs et les accomplissements.", author: "Jim Rohn" },
+  { text: "Ce n'est pas la volonté qui crée le changement, c'est la constance.", author: "Anonymous" },
+  { text: "Un petit progrès chaque jour mène à de grands résultats.", author: "Satya Nani" },
+  { text: "Il n'est jamais trop tard pour devenir ce que tu aurais pu être.", author: "George Eliot" },
+  { text: "Le corps accomplit ce que l'esprit croit.", author: "Napoleon Hill" },
+  { text: "Chaque championnat se gagne d'abord dans la routine quotidienne.", author: "Anonymous" },
+  { text: "Tu n'as pas à être exceptionnel chaque jour. Tu dois juste être constant.", author: "Anonymous" },
+  { text: "La santé est la première des richesses.", author: "Ralph Waldo Emerson" },
+  { text: "Commence là où tu es. Utilise ce que tu as. Fais ce que tu peux.", author: "Arthur Ashe" },
+];
+
 type Habit = { id: string; name: string; emoji: string };
 
 function todayLabel() {
@@ -21,6 +39,7 @@ export default function HabitudesPage() {
   const [newName, setNewName] = useState("");
   const [newEmoji, setNewEmoji] = useState("✅");
   const [saving, setSaving] = useState(false);
+  const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)]);
 
   async function loadHabits() {
     const [habitsRes, logsRes] = await Promise.all([
@@ -175,6 +194,14 @@ export default function HabitudesPage() {
             })}
           </div>
         )}
+      </div>
+
+      {/* Citation du jour */}
+      <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: "4px solid #1a1a1a", borderRadius: 4, padding: "12px 16px", marginBottom: 16 }}>
+        <p style={{ fontSize: 13, color: "#1a1a1a", lineHeight: 1.6, fontStyle: "italic", marginBottom: 6 }}>
+          &ldquo;{quote.text}&rdquo;
+        </p>
+        <p style={{ ...mono, fontSize: 10, color: "#7a7268", letterSpacing: 1 }}>— {quote.author.toUpperCase()}</p>
       </div>
 
       {/* Add habit */}

@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   if (!session?.user?.id) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const days = Math.min(Number(searchParams.get("days") ?? "30"), 90);
+  const days = Math.min(Number(searchParams.get("days") ?? "30"), 365);
 
   const from = new Date();
   from.setUTCHours(0, 0, 0, 0);
