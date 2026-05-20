@@ -210,6 +210,28 @@ export default async function RecettePage({
           Préparez vos ingrédients à l&apos;avance (meal prep du dimanche) pour gagner du temps en semaine et respecter plus facilement vos apports nutritionnels.
         </p>
       </div>
+
+      {/* Marmiton */}
+      <a
+        href={`https://www.marmiton.org/recettes/recherche.aspx?aqt=${encodeURIComponent(meal.name)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between rounded px-4 py-3 transition-opacity hover:opacity-80"
+        style={{ background: "#fff", border: "1px solid #d8d0c4", textDecoration: "none" }}
+      >
+        <div className="flex items-center gap-3">
+          <span style={{ fontSize: "20px" }}>👨‍🍳</span>
+          <div>
+            <p style={{ ...mono, fontSize: "10px", color: "#1a1a1a", letterSpacing: "1px", fontWeight: 700 }}>
+              VOIR SUR MARMITON
+            </p>
+            <p style={{ fontSize: "11px", color: "#7a7268", marginTop: "2px" }}>
+              Recettes détaillées et variantes pour &laquo;&nbsp;{meal.name}&nbsp;&raquo;
+            </p>
+          </div>
+        </div>
+        <span style={{ ...mono, fontSize: "12px", color: "#c0392b" }}>→</span>
+      </a>
     </div>
   );
 }
