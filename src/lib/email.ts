@@ -1,8 +1,7 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function sendPasswordResetEmail(email: string, token: string, baseUrl: string) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const resetUrl = `${baseUrl}/reset-password?token=${token}`;
   const from = process.env.RESEND_FROM ?? "FitPlanner <onboarding@resend.dev>";
 
