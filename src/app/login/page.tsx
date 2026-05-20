@@ -89,7 +89,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-5 text-center" style={{ fontSize: "13px", color: "#7a7268" }}>
+          <p className="mt-4 text-center" style={{ fontSize: "13px", color: "#7a7268" }}>
+            <Link href="/forgot-password" style={{ color: "#7a7268", textDecoration: "none" }}>
+              Mot de passe oublié ?
+            </Link>
+          </p>
+          <p className="mt-3 text-center" style={{ fontSize: "13px", color: "#7a7268" }}>
             Pas encore de compte ?{" "}
             <Link href="/register" style={{ color: "#c0392b", fontWeight: 600, textDecoration: "none" }}>
               S&apos;inscrire
