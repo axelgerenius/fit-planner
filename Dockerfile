@@ -15,6 +15,10 @@ COPY . .
 # Génère le client Prisma avant le build Next.js
 RUN npx prisma generate
 
+# DATABASE_URL fictif pour que le module Prisma s'initialise sans planter au build
+# (la vraie valeur est injectée au runtime via env du container)
+ENV DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
+
 RUN npm run build
 
 # ─── Stage 3 : Image de production ────────────────────────────────────────────
