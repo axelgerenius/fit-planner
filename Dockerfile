@@ -33,6 +33,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Client Prisma généré (non tracé automatiquement par Next.js standalone)
+COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
+
 USER nextjs
 EXPOSE 3000
 

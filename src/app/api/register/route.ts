@@ -10,21 +10,26 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Données invalides" }, { status: 400 });
+  try {
+    const body = await req.json();
+    const parsed = schema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Données invalides" }, { status: 400 });
+    }
+
+    const { name, email, password } = parsed.data;
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json({ error: "Email déjà utilisé" }, { status: 409 });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+    await prisma.user.create({ data: { name, email, password: hashed } });
+
+    return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (err) {
+    console.error("[register]", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
-
-  const { name, email, password } = parsed.data;
-
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return NextResponse.json({ error: "Email déjà utilisé" }, { status: 409 });
-  }
-
-  const hashed = await bcrypt.hash(password, 10);
-  await prisma.user.create({ data: { name, email, password: hashed } });
-
-  return NextResponse.json({ ok: true }, { status: 201 });
 }
