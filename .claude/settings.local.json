@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma *)",
+      "Bash(npm run *)",
+      "Bash(Remove-Item \"f:\\\\workspace\\\\fit-planner\\\\src\\\\middleware.ts\")",
+      "WebFetch(domain:home.choucroutetropicale.fr)",
+      "Bash(docker info *)",
+      "Bash(docker system *)",
+      "Bash(docker login *)",
+      "PowerShell(docker info --format \"{{.RegistryConfig.IndexConfigs}}\" 2>&1)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
+}

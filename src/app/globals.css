@@ -1,26 +1,129 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans), 'DM Sans', sans-serif;
+  --font-mono: var(--font-space-mono), 'Space Mono', monospace;
+  --font-display: var(--font-bebas), 'Bebas Neue', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+  --radius-2xl: calc(var(--radius) * 3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #f5f0e8;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #c0392b;
+  --primary-foreground: #ffffff;
+  --secondary: #ede8df;
+  --secondary-foreground: #1a1a1a;
+  --muted: #ede8df;
+  --muted-foreground: #7a7268;
+  --accent: #ede8df;
+  --accent-foreground: #1a1a1a;
+  --destructive: #c0392b;
+  --border: #d8d0c4;
+  --input: #d8d0c4;
+  --ring: #c0392b;
+  --chart-1: #c0392b;
+  --chart-2: #2c7a4b;
+  --chart-3: #1a3a5c;
+  --chart-4: #f39c12;
+  --chart-5: #7a7268;
+  --radius: 0.25rem;
+  --sidebar: #f5f0e8;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #c0392b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ede8df;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #d8d0c4;
+  --sidebar-ring: #c0392b;
+
+  /* palette étendue */
+  --color-green: #2c7a4b;
+  --color-navy: #1a3a5c;
+  --color-orange: #f39c12;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --foreground: #f5f0e8;
+  --card: #2a2a2a;
+  --card-foreground: #f5f0e8;
+  --popover: #2a2a2a;
+  --popover-foreground: #f5f0e8;
+  --primary: #e74c3c;
+  --primary-foreground: #ffffff;
+  --secondary: #3a3a3a;
+  --secondary-foreground: #f5f0e8;
+  --muted: #3a3a3a;
+  --muted-foreground: #a09880;
+  --accent: #3a3a3a;
+  --accent-foreground: #f5f0e8;
+  --destructive: #e74c3c;
+  --border: #3a3a3a;
+  --input: #3a3a3a;
+  --ring: #e74c3c;
+  --sidebar: #2a2a2a;
+  --sidebar-foreground: #f5f0e8;
+  --sidebar-primary: #e74c3c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #3a3a3a;
+  --sidebar-accent-foreground: #f5f0e8;
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: #e74c3c;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    font-size: 15px;
+  }
 }

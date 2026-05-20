@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── NextAuth ─────────────────────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Utilisateur ──────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+
+  accounts      Account[]
+  sessions      Session[]
+  profile       UserProfile?
+  workoutPlans  WorkoutPlan[]
+  nutritionPlan NutritionPlan?
+  shoppingLists ShoppingList[]
+}
+
+model UserProfile {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  goal      Goal
+  level     Level
+  equipment Equipment[]
+  age       Int
+  weight    Float
+  height    Float
+  sex       Sex
+
+  bmr            Float?
+  tdee           Float?
+  targetCalories Float?
+
+  onboardingDone Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
+enum Goal {
+  MUSCLE_GAIN
+  FAT_LOSS
+  STAY_FIT
+  GENTLE_RETURN
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Equipment {
+  GYM
+  HOME
+  OUTDOOR
+  NONE
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+// ─── Planning sportif ─────────────────────────────────────────────────────────
+
+model WorkoutPlan {
+  id       String           @id @default(cuid())
+  userId   String
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name     String
+  goal     Goal
+  level    Level
+  sessions WorkoutSession[]
+  isActive Boolean          @default(true)
+  createdAt DateTime        @default(now())
+}
+
+model WorkoutSession {
+  id          String      @id @default(cuid())
+  planId      String
+  plan        WorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int
+  name        String
+  type        SessionType
+  durationMin Int
+  exercises   Exercise[]
+  completed   Boolean     @default(false)
+  completedAt DateTime?
+}
+
+enum SessionType {
+  STRENGTH
+  CARDIO
+  HIIT
+  YOGA_STRETCH
+  FULL_BODY
+  REST
+}
+
+model Exercise {
+  id        String         @id @default(cuid())
+  sessionId String
+  session   WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name      String
+  sets      Int?
+  reps      String?
+  restSec   Int?
+  notes     String?
+  order     Int
+}
+
+// ─── Planning nutritionnel ────────────────────────────────────────────────────
+
+model NutritionPlan {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekMenus DayMenu[]
+  createdAt DateTime  @default(now())
+}
+
+model DayMenu {
+  id             String        @id @default(cuid())
+  planId         String
+  plan           NutritionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayOfWeek      Int
+  totalCalories  Float
+  totalProtein   Float
+  totalCarbs     Float
+  totalFat       Float
+  meals          Meal[]
+}
+
+model Meal {
+  id          String         @id @default(cuid())
+  dayMenuId   String
+  dayMenu     DayMenu        @relation(fields: [dayMenuId], references: [id], onDelete: Cascade)
+  type        MealType
+  name        String
+  calories    Float
+  protein     Float
+  carbs       Float
+  fat         Float
+  ingredients MealIngredient[]
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+model MealIngredient {
+  id       String             @id @default(cuid())
+  mealId   String
+  meal     Meal               @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  name     String
+  quantity Float
+  unit     String
+  category IngredientCategory
+}
+
+enum IngredientCategory {
+  MEAT_FISH
+  DAIRY_EGGS
+  FRUITS_VEGETABLES
+  CEREALS_LEGUMES
+  FATS_OILS
+  CONDIMENTS
+  OTHER
+}
+
+// ─── Liste de courses ─────────────────────────────────────────────────────────
+
+model ShoppingList {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart DateTime
+  items     ShoppingItem[]
+  createdAt DateTime       @default(now())
+}
+
+model ShoppingItem {
+  id       String             @id @default(cuid())
+  listId   String
+  list     ShoppingList       @relation(fields: [listId], references: [id], onDelete: Cascade)
+  name     String
+  quantity Float
+  unit     String
+  category IngredientCategory
+  checked  Boolean            @default(false)
+}

@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+node_modules
+.next
+out
+Dockerfile
+.dockerignore
+README.md
+prisma/migrations
