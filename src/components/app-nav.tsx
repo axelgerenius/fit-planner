@@ -17,6 +17,8 @@ const NAV_LINKS = [
   { href: "/planning", label: "Planning" },
   { href: "/nutrition", label: "Nutrition" },
   { href: "/courses", label: "Courses" },
+  { href: "/habitudes", label: "Habitudes" },
+  { href: "/historique", label: "Historique" },
 ];
 
 export default function AppNav({ user }: { user: { name: string; email: string } }) {

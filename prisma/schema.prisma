@@ -60,6 +60,9 @@ model User {
   workoutPlans  WorkoutPlan[]
   nutritionPlan NutritionPlan?
   shoppingLists ShoppingList[]
+  habits        Habit[]
+  habitLogs     HabitLog[]
+  weightLogs    WeightLog[]
 }
 
 model UserProfile {
@@ -216,6 +219,44 @@ enum IngredientCategory {
   FATS_OILS
   CONDIMENTS
   OTHER
+}
+
+// ─── Habitudes ────────────────────────────────────────────────────────────────
+
+model Habit {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  emoji     String     @default("✅")
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  logs      HabitLog[]
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, date])
+}
+
+// ─── Suivi du poids ───────────────────────────────────────────────────────────
+
+model WeightLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight    Float
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
 }
 
 // ─── Réinitialisation mot de passe ────────────────────────────────────────────

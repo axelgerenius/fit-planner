@@ -23,7 +23,13 @@ export default async function DashboardPage() {
   const session = await auth();
   const userId = session!.user!.id!;
 
-  const [profile, workoutPlan, nutritionPlan] = await Promise.all([
+  // Start of current week (Monday)
+  const weekStart = new Date();
+  weekStart.setUTCHours(0, 0, 0, 0);
+  const dayOfWeek = weekStart.getDay();
+  weekStart.setDate(weekStart.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+  const [profile, workoutPlan, nutritionPlan, habits, habitLogs] = await Promise.all([
     prisma.userProfile.findUnique({ where: { userId } }),
     prisma.workoutPlan.findFirst({
       where: { userId, isActive: true },
@@ -33,7 +39,20 @@ export default async function DashboardPage() {
       where: { userId },
       include: { weekMenus: { orderBy: { dayOfWeek: "asc" } } },
     }),
+    prisma.habit.count({ where: { userId, isActive: true } }),
+    prisma.habitLog.findMany({
+      where: { userId, date: { gte: weekStart } },
+      select: { date: true },
+    }),
   ]);
+
+  // Build habit count per day of week (0=Mon … 6=Sun)
+  const habitsByDay: number[] = Array(7).fill(0);
+  for (const log of habitLogs) {
+    const d = new Date(log.date);
+    const idx = (d.getDay() + 6) % 7; // convert Sun=0 to Mon=0
+    habitsByDay[idx]++;
+  }
 
   const today = new Date().getDay();
   const todayIndex = today === 0 ? 6 : today - 1;
@@ -166,6 +185,33 @@ export default async function DashboardPage() {
           </>
         ) : (
           <p className="text-sm text-muted-foreground">Aucun menu pour aujourd&apos;hui.</p>
+        )}
+      </div>
+
+      {/* Habitudes de la semaine */}
+      <div className="rounded p-4" style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: "4px solid #f39c12" }}>
+        <div className="flex items-center justify-between mb-3">
+          <p style={{ ...mono, fontSize: "10px", color: "#7a7268" }}>HABITUDES — CETTE SEMAINE</p>
+          <a href="/habitudes" style={{ ...mono, fontSize: "10px", color: "#c0392b", textDecoration: "none" }}>AUJOURD'HUI →</a>
+        </div>
+        {habits === 0 ? (
+          <p className="text-sm text-muted-foreground">Aucune habitude définie. <a href="/habitudes" style={{ color: "#c0392b" }}>Ajouter</a></p>
+        ) : (
+          <div className="grid grid-cols-7 gap-1">
+            {DAY_NAMES_SHORT.map((day, i) => {
+              const count = habitsByDay[i];
+              const pct = habits > 0 ? count / habits : 0;
+              const isToday = i === todayIndex;
+              const bg = pct === 0 ? "#f5f0e8" : pct < 0.5 ? "#f39c12" : pct < 1 ? "#a8d5b5" : "#2c7a4b";
+              const textColor = pct >= 0.5 ? "#fff" : "#1a1a1a";
+              return (
+                <div key={day} className="text-center py-2 rounded" style={{ background: bg, border: isToday ? "2px solid #1a1a1a" : "1px solid #d8d0c4" }}>
+                  <p style={{ ...mono, fontSize: "9px", color: pct >= 0.5 ? "#fff" : "#7a7268", fontWeight: 700, marginBottom: 2 }}>{day.toUpperCase()}</p>
+                  <p style={{ ...mono, fontSize: "9px", color: textColor }}>{count > 0 ? `${count}/${habits}` : "·"}</p>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
