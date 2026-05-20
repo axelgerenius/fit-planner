@@ -23,10 +23,25 @@ const EQUIPMENTS = [
   { value: "NONE", label: "Aucun matériel", icon: "🤸" },
 ];
 
+const DIETS = [
+  { value: "OMNIVORE",    label: "Omnivore",    icon: "🍗", desc: "Je mange de tout" },
+  { value: "VEGETARIAN",  label: "Végétarien",  icon: "🥚", desc: "Pas de viande ni poisson, mais œufs et produits laitiers" },
+  { value: "VEGAN",       label: "Vegan",       icon: "🌱", desc: "Aucun produit d'origine animale" },
+];
+
+const ALLERGIES = [
+  { value: "GLUTEN",    label: "Gluten",          icon: "🌾" },
+  { value: "LACTOSE",   label: "Lactose",         icon: "🥛" },
+  { value: "NUTS",      label: "Fruits à coque",  icon: "🥜" },
+  { value: "EGGS",      label: "Œufs",            icon: "🥚" },
+  { value: "SOY",       label: "Soja",            icon: "🫘" },
+  { value: "SHELLFISH", label: "Crustacés",       icon: "🦐" },
+];
+
 type FormData = {
   goal: string; level: string; equipment: string[];
   sex: string; age: string; weight: string; height: string;
-  sessionsPerWeek: string;
+  sessionsPerWeek: string; diet: string; allergies: string[];
 };
 
 const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
@@ -44,10 +59,11 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState<FormData>({
-    goal: "", level: "", equipment: [], sex: "", age: "", weight: "", height: "", sessionsPerWeek: "",
+    goal: "", level: "", equipment: [], sex: "", age: "", weight: "", height: "",
+    sessionsPerWeek: "", diet: "OMNIVORE", allergies: [],
   });
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const pct = Math.round((step / totalSteps) * 100);
 
   function toggleEquipment(val: string) {
@@ -56,6 +72,15 @@ export default function OnboardingPage() {
       equipment: f.equipment.includes(val)
         ? f.equipment.filter((e) => e !== val)
         : [...f.equipment, val],
+    }));
+  }
+
+  function toggleAllergy(val: string) {
+    setForm((f) => ({
+      ...f,
+      allergies: f.allergies.includes(val)
+        ? f.allergies.filter((a) => a !== val)
+        : [...f.allergies, val],
     }));
   }
 
@@ -330,12 +355,105 @@ export default function OnboardingPage() {
                     ← RETOUR
                   </button>
                   <button
-                    disabled={!form.sex || !form.age || !form.weight || !form.height || loading}
-                    onClick={handleSubmit}
+                    disabled={!form.sex || !form.age || !form.weight || !form.height}
+                    onClick={() => setStep(5)}
                     className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
                     style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
                   >
-                    {loading ? "GÉNÉRATION…" : "CRÉER MON PROGRAMME"}
+                    CONTINUER →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5 — Régime & allergies */}
+          {step === 5 && (
+            <div>
+              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
+                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>ALIMENTATION</h2>
+                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+                  Pour adapter vos menus à vos préférences et contraintes.
+                </p>
+              </div>
+              <div className="p-4 space-y-5">
+
+                {/* Régime */}
+                <div>
+                  <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>
+                    RÉGIME ALIMENTAIRE
+                  </p>
+                  <div className="space-y-2">
+                    {DIETS.map((d) => (
+                      <button
+                        key={d.value}
+                        onClick={() => setForm((f) => ({ ...f, diet: d.value }))}
+                        className="w-full flex items-center gap-3 text-left transition-all hover:opacity-90"
+                        style={{
+                          padding: "11px 14px", borderRadius: "3px",
+                          border: form.diet === d.value ? "2px solid #c0392b" : "1px solid #d8d0c4",
+                          background: form.diet === d.value ? "#fff5f5" : "#f5f0e8",
+                        }}
+                      >
+                        <span style={{ fontSize: "20px" }}>{d.icon}</span>
+                        <div>
+                          <p style={{ fontWeight: 600, fontSize: "14px" }}>{d.label}</p>
+                          <p style={{ fontSize: "11px", color: "#7a7268" }}>{d.desc}</p>
+                        </div>
+                        {form.diet === d.value && (
+                          <span style={{ marginLeft: "auto", color: "#c0392b", fontSize: "16px" }}>✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Allergies */}
+                <div>
+                  <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>
+                    ALLERGIES / INTOLÉRANCES <span style={{ color: "#d8d0c4" }}>(optionnel)</span>
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ALLERGIES.map((a) => (
+                      <button
+                        key={a.value}
+                        onClick={() => toggleAllergy(a.value)}
+                        className="flex items-center gap-2 text-left transition-all hover:opacity-90"
+                        style={{
+                          padding: "10px 12px", borderRadius: "3px",
+                          border: form.allergies.includes(a.value) ? "2px solid #1a3a5c" : "1px solid #d8d0c4",
+                          background: form.allergies.includes(a.value) ? "#eef2f7" : "#f5f0e8",
+                        }}
+                      >
+                        <span style={{ fontSize: "18px" }}>{a.icon}</span>
+                        <span style={{ fontSize: "13px", fontWeight: form.allergies.includes(a.value) ? 600 : 400 }}>
+                          {a.label}
+                        </span>
+                        {form.allergies.includes(a.value) && (
+                          <span style={{ marginLeft: "auto", color: "#1a3a5c", fontSize: "12px" }}>✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {error && <p style={{ ...mono, fontSize: "11px", color: "#c0392b" }}>{error}</p>}
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setStep(4)}
+                    className="flex-1 transition-opacity hover:opacity-80"
+                    style={{ ...mono, fontSize: "11px", background: "#f5f0e8", color: "#1a1a1a", padding: "12px", borderRadius: "3px", border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: "1px" }}
+                  >
+                    ← RETOUR
+                  </button>
+                  <button
+                    disabled={loading}
+                    onClick={handleSubmit}
+                    className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+                    style={{ ...mono, fontSize: "11px", background: "#c0392b", color: "#fff", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                  >
+                    {loading ? "GÉNÉRATION…" : "🚀 CRÉER MON PROGRAMME"}
                   </button>
                 </div>
               </div>

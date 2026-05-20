@@ -82,6 +82,9 @@ model UserProfile {
   tdee           Float?
   targetCalories Float?
 
+  diet           Diet        @default(OMNIVORE)
+  allergies      Allergy[]
+
   onboardingDone Boolean  @default(false)
   updatedAt      DateTime @updatedAt
 }
@@ -91,6 +94,21 @@ enum Goal {
   FAT_LOSS
   STAY_FIT
   GENTLE_RETURN
+}
+
+enum Diet {
+  OMNIVORE
+  VEGETARIAN
+  VEGAN
+}
+
+enum Allergy {
+  GLUTEN
+  LACTOSE
+  NUTS
+  EGGS
+  SOY
+  SHELLFISH
 }
 
 enum Level {
