@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   }
 
   const { goal, level, equipment, sex, age, weight, height, sessionsPerWeek, diet, allergies } = parsed.data;
+  try {
 
   // Calcul des calories
   const { bmr, tdee, targetCalories } = computeTargetCalories(weight, height, age, sex, goal);
@@ -104,4 +105,8 @@ export async function POST(req: Request) {
   });
 
   return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (err) {
+    console.error("[onboarding]", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 }

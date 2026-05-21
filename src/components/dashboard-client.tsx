@@ -70,7 +70,7 @@ const SESSION_COLOR: Record<string, string> = {
 };
 
 export type DayData = {
-  session?: { id: string; name: string; type: string; durationMin: number; completed: boolean };
+  session?: { id: string; name: string; type: string; icon: string | null; durationMin: number; completed: boolean };
   menu?: { totalCalories: number; totalProtein: number; totalCarbs: number; totalFat: number };
   habitCount: number;
 };
@@ -87,26 +87,6 @@ type Props = {
   days: DayData[];
 };
 
-function circleBg(d: DayData, totalHabits: number, isPast: boolean): string {
-  const hPct = totalHabits > 0 ? d.habitCount / totalHabits : 0;
-  const sessionDone = d.session?.completed && d.session.type !== "REST";
-  const isRest = d.session?.type === "REST";
-
-  if (!isPast) return "#ffffff";
-  if (sessionDone && hPct === 1) return "#2c7a4b";
-  if (sessionDone && hPct >= 0.5) return "#3a8f5e";
-  if (sessionDone) return "#1a3a5c";
-  if (isRest && hPct === 1) return "#2c7a4b";
-  if (isRest && hPct > 0) return "#a8d5b5";
-  if (hPct === 1) return "#a8d5b5";
-  if (hPct >= 0.5) return "#f9d48a";
-  return "#ede8df";
-}
-
-function circleTextColor(bg: string): string {
-  const dark = ["#2c7a4b", "#3a8f5e", "#1a3a5c"];
-  return dark.includes(bg) ? "#ffffff" : "#1a1a1a";
-}
 
 export default function DashboardClient({
   firstName, goalLabel, todayIndex, totalHabits,
@@ -140,16 +120,27 @@ export default function DashboardClient({
         </div>
 
         {/* Cercles des 7 jours */}
-        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "flex-end", padding: "16px 8px 12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "flex-end", padding: "14px 4px 10px" }}>
           {DAY_NAMES_SHORT.map((dayLetter, i) => {
             const d = days[i];
             const isToday = i === todayIndex;
             const isSelected = i === selected;
             const isPast = i <= todayIndex;
-            const bg = circleBg(d, totalHabits, isPast);
-            const textCol = circleTextColor(bg);
             const sessionColor = d.session ? SESSION_COLOR[d.session.type] : "#d8d0c4";
             const sessionDone = d.session?.completed && d.session.type !== "REST";
+            const hPct = totalHabits > 0 ? d.habitCount / totalHabits : 0;
+
+            // Couleur du fond du cercle
+            const bg = !isPast ? "#fff"
+              : sessionDone && hPct === 1 ? "#2c7a4b"
+              : sessionDone && hPct >= 0.5 ? "#3a8f5e"
+              : sessionDone ? "#1a3a5c"
+              : d.session?.type === "REST" && hPct === 1 ? "#2c7a4b"
+              : d.session?.type === "REST" && hPct > 0 ? "#a8d5b5"
+              : hPct >= 0.5 ? "#f9d48a"
+              : "#ede8df";
+
+            const lightBg = ["#fff", "#ede8df", "#f9d48a", "#a8d5b5"].includes(bg);
 
             return (
               <button
@@ -157,54 +148,49 @@ export default function DashboardClient({
                 onClick={() => setSelected(i)}
                 style={{ all: "unset", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}
               >
-                {/* Circle */}
+                {/* Cercle */}
                 <div style={{
-                  width: 54, height: 54,
+                  width: 40, height: 40,
                   borderRadius: "50%",
                   background: bg,
-                  border: isSelected
-                    ? "3px solid #1a1a1a"
-                    : isToday
-                    ? `3px solid ${sessionColor}`
-                    : sessionDone
-                    ? `2px solid ${sessionColor}`
+                  border: isSelected ? "2.5px solid #1a1a1a"
+                    : isToday ? `2.5px solid ${sessionColor}`
+                    : sessionDone ? `2px solid ${sessionColor}`
                     : "2px solid #d8d0c4",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: "flex", flexDirection: "column",
+                  alignItems: "center", justifyContent: "center",
                   boxShadow: isSelected ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
                   transition: "all 0.15s",
                   position: "relative",
                 }}>
-                  <span style={{ fontSize: "20px", lineHeight: 1 }}>
-                    {d.session ? (d.session.type === "REST" ? "🛌" : SESSION_ICONS[d.session.type]) : "·"}
+                  <span style={{ fontSize: "16px", lineHeight: 1 }}>
+                    {d.session ? (d.session.icon ?? (d.session.type === "REST" ? "🛌" : SESSION_ICONS[d.session.type])) : "·"}
                   </span>
                   {sessionDone && (
                     <span style={{
                       position: "absolute", bottom: -1, right: -1,
-                      width: 14, height: 14, borderRadius: "50%",
+                      width: 13, height: 13, borderRadius: "50%",
                       background: "#2c7a4b", border: "1.5px solid #fff",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 8, color: "#fff",
+                      fontSize: 7, color: "#fff",
                     }}>✓</span>
                   )}
                 </div>
 
-                {/* Day name */}
+                {/* Nom du jour */}
                 <span style={{
-                  ...mono, fontSize: "10px", fontWeight: 700,
+                  ...mono, fontSize: "9px", fontWeight: 700,
                   color: isToday ? "#c0392b" : isSelected ? "#1a1a1a" : "#7a7268",
                 }}>
-                  {dayLetter}{isToday ? " •" : ""}
+                  {dayLetter}{isToday ? "•" : ""}
                 </span>
 
-                {/* Habit dot bar */}
-                <div style={{ width: 36, height: 3, borderRadius: 2, background: "#ede8df", overflow: "hidden" }}>
+                {/* Barre habitudes */}
+                <div style={{ width: 30, height: 3, borderRadius: 2, background: "#ede8df", overflow: "hidden" }}>
                   <div style={{
                     height: "100%",
-                    width: `${totalHabits > 0 ? (d.habitCount / totalHabits) * 100 : 0}%`,
-                    background: d.habitCount === totalHabits && totalHabits > 0 ? "#2c7a4b" : "#f39c12",
+                    width: `${hPct * 100}%`,
+                    background: hPct === 1 && totalHabits > 0 ? "#2c7a4b" : "#f39c12",
                     transition: "width 0.3s",
                   }} />
                 </div>
@@ -274,7 +260,7 @@ export default function DashboardClient({
         ) : s ? (
           <>
             <div className="flex items-center gap-2 mb-3">
-              <span style={{ fontSize: "20px" }}>{SESSION_ICONS[s.type]}</span>
+              <span style={{ fontSize: "20px" }}>{s.icon ?? SESSION_ICONS[s.type]}</span>
               <div style={{ flex: 1 }}>
                 <p style={{ fontWeight: 600, fontSize: 14 }}>{s.name}</p>
                 <p style={{ ...mono, fontSize: "10px", color: "#7a7268" }}>{SESSION_LABELS[s.type]} · {s.durationMin} min</p>

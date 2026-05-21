@@ -97,7 +97,8 @@ export default function OnboardingPage() {
       router.push("/dashboard");
       router.refresh();
     } else {
-      setError("Une erreur est survenue. Veuillez réessayer.");
+      const data = await res.json().catch(() => ({}));
+      setError(data?.error ?? "Une erreur est survenue. Veuillez réessayer.");
     }
   }
 

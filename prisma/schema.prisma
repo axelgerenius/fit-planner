@@ -83,7 +83,7 @@ model UserProfile {
   targetCalories Float?
 
   diet           Diet        @default(OMNIVORE)
-  allergies      Allergy[]
+  allergies      String[]
 
   onboardingDone Boolean  @default(false)
   updatedAt      DateTime @updatedAt
@@ -150,6 +150,8 @@ model WorkoutSession {
   dayOfWeek   Int
   name        String
   type        SessionType
+  icon        String?
+  notes       String?
   durationMin Int
   exercises   Exercise[]
   completed   Boolean     @default(false)
@@ -173,6 +175,7 @@ model Exercise {
   sets      Int?
   reps      String?
   restSec   Int?
+  weightKg  Float?
   notes     String?
   order     Int
 }

@@ -85,7 +85,7 @@ export default async function DashboardPage() {
     const s = workoutPlan?.sessions.find(s => s.dayOfWeek === i);
     const m = nutritionPlan?.weekMenus.find(m => m.dayOfWeek === i);
     return {
-      session: s ? { id: s.id, name: s.name, type: s.type, durationMin: s.durationMin, completed: s.completed } : undefined,
+      session: s ? { id: s.id, name: s.name, type: s.type, icon: s.icon ?? null, durationMin: s.durationMin, completed: s.completed } : undefined,
       menu: m ? { totalCalories: m.totalCalories, totalProtein: m.totalProtein, totalCarbs: m.totalCarbs, totalFat: m.totalFat } : undefined,
       habitCount: habitsByDay[i],
     };
