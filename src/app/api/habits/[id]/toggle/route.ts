@@ -11,8 +11,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const habit = await prisma.habit.findFirst({ where: { id, userId: session.user.id } });
   if (!habit) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
 
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const existing = await prisma.habitLog.findUnique({
     where: { habitId_date: { habitId: id, date: today } },

@@ -9,9 +9,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const days = Math.min(Number(searchParams.get("days") ?? "30"), 365);
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setUTCHours(0, 0, 0, 0);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - (days - 1));
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (days - 1));
 
   const sessions = await prisma.workoutSession.findMany({
     where: {

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import SessionCard from "@/components/session-card";
+import SportTabs from "@/components/sport-tabs";
 
 const DAY_NAMES = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
@@ -30,8 +31,9 @@ export default async function PlanningPage() {
 
   return (
     <div className="space-y-3 pb-8">
+      <SportTabs />
       <div className="flex items-center justify-between">
-        <h1 style={{ ...display, fontSize: "26px", letterSpacing: "2px" }}>PLANNING SPORT</h1>
+        <h1 style={{ ...display, fontSize: "26px", letterSpacing: "2px" }}>SPORT</h1>
       </div>
       <p style={{ ...mono, fontSize: "10px", color: "#7a7268" }}>{workoutPlan.name.toUpperCase()}</p>
 

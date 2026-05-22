@@ -6,8 +6,8 @@ export async function GET() {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const logs = await prisma.habitLog.findMany({
     where: { userId: session.user.id, date: today },

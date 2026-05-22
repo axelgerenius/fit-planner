@@ -13,10 +13,13 @@ export default async function DashboardPage() {
   const session = await auth();
   const userId = session!.user!.id!;
 
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
-  const todayDow = today.getDay();
-  const todayIndex = todayDow === 0 ? 6 : todayDow - 1;
+  // Utilise l'heure locale (pas UTC) pour éviter les décalages après minuit
+  const now = new Date();
+  const todayDow = now.getDay(); // 0=Dim … 6=Sam en heure locale
+  const todayIndex = todayDow === 0 ? 6 : todayDow - 1; // 0=Lun … 6=Dim
+
+  // Début de journée locale → converti en UTC pour les requêtes Prisma
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const weekStart = new Date(today);
   weekStart.setDate(today.getDate() - todayIndex);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SportTabs from "@/components/sport-tabs";
 
 const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
 const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
@@ -67,6 +68,8 @@ export default function CarnetPage() {
 
   return (
     <div style={{ maxWidth: 600, margin: "0 auto" }}>
+      <SportTabs />
+
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ ...display, fontSize: 36, letterSpacing: 2, color: "#1a1a1a", marginBottom: 4 }}>CARNET</h1>

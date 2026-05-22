@@ -170,6 +170,24 @@ export default async function NutritionPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      {/* Lien courses */}
+      <Link href="/courses"
+        className="flex items-center justify-between rounded p-4 mt-4 transition-opacity hover:opacity-80"
+        style={{ background: "#fff", border: "1px solid #d8d0c4", textDecoration: "none" }}>
+        <div className="flex items-center gap-3">
+          <span style={{ fontSize: 22 }}>🛒</span>
+          <div>
+            <p style={{ fontFamily: "var(--font-space-mono), 'Space Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1, color: "#1a1a1a" }}>
+              LISTE DE COURSES
+            </p>
+            <p style={{ fontSize: 12, color: "#7a7268", marginTop: 2 }}>
+              Générer la liste pour cette semaine
+            </p>
+          </div>
+        </div>
+        <span style={{ color: "#c0392b", fontSize: 16 }}>→</span>
+      </Link>
     </div>
   );
 }

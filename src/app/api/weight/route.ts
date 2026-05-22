@@ -12,9 +12,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const days = Math.min(Number(searchParams.get("days") ?? "90"), 365);
 
-  const from = new Date();
-  from.setUTCHours(0, 0, 0, 0);
-  from.setDate(from.getDate() - (days - 1));
+  const now = new Date();
+  const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (days - 1));
 
   const logs = await prisma.weightLog.findMany({
     where: { userId: session.user.id, date: { gte: from } },
@@ -32,8 +31,8 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Données invalides" }, { status: 400 });
 
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const _now = new Date();
+  const today = new Date(_now.getFullYear(), _now.getMonth(), _now.getDate());
 
   const log = await prisma.weightLog.upsert({
     where: { userId_date: { userId: session.user.id, date: today } },

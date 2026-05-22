@@ -10,9 +10,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const days = Math.min(Number(searchParams.get("days") ?? "30"), 365);
 
-  const from = new Date();
-  from.setUTCHours(0, 0, 0, 0);
-  from.setDate(from.getDate() - days + 1);
+  const now = new Date();
+  const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - days + 1);
 
   const [logs, totalHabits] = await Promise.all([
     prisma.habitLog.findMany({
