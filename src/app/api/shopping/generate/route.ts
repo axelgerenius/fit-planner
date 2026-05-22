@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeIngredient } from "@/lib/normalize-ingredient";
 
 function getWeekStart() {
   const now = new Date();
@@ -34,20 +35,23 @@ export async function POST() {
     return NextResponse.json({ error: "Aucun plan nutritionnel" }, { status: 404 });
   }
 
-  // Agréger tous les ingrédients par nom+unité
+  // Agréger tous les ingrédients par nom normalisé + unité
   const aggregated = new Map<string, { name: string; quantity: number; unit: string; category: string }>();
 
   for (const menu of nutritionPlan.weekMenus) {
     for (const meal of menu.meals) {
       for (const ing of meal.ingredients) {
-        const key = `${ing.name.toLowerCase()}::${ing.unit}`;
+        const { name: normalizedName, unitOverride } = normalizeIngredient(ing.name);
+        const unit = unitOverride ?? ing.unit;
+        const key = `${normalizedName.toLowerCase()}::${unit}`;
+
         if (aggregated.has(key)) {
           aggregated.get(key)!.quantity += ing.quantity;
         } else {
           aggregated.set(key, {
-            name: ing.name,
+            name: normalizedName,
             quantity: ing.quantity,
-            unit: ing.unit,
+            unit,
             category: ing.category,
           });
         }
