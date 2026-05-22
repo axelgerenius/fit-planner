@@ -63,6 +63,7 @@ model User {
   habits        Habit[]
   habitLogs     HabitLog[]
   weightLogs    WeightLog[]
+  workoutLogs   WorkoutLog[]
 }
 
 model UserProfile {
@@ -240,6 +241,35 @@ enum IngredientCategory {
   FATS_OILS
   CONDIMENTS
   OTHER
+}
+
+// ─── Carnet de séances ────────────────────────────────────────────────────────
+
+model WorkoutLog {
+  id          String             @id @default(cuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId   String?
+  sessionName String
+  sessionType String
+  sessionIcon String?
+  date        DateTime
+  durationMin Int?
+  notes       String?
+  exercises   WorkoutLogExercise[]
+  createdAt   DateTime           @default(now())
+}
+
+model WorkoutLogExercise {
+  id       String     @id @default(cuid())
+  logId    String
+  log      WorkoutLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+  name     String
+  sets     Int?
+  reps     String?
+  weightKg Float?
+  restSec  Int?
+  order    Int
 }
 
 // ─── Habitudes ────────────────────────────────────────────────────────────────

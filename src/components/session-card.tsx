@@ -116,7 +116,16 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel 
         {/* Actions */}
         <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: "1px solid #ede8df" }}>
           {s.type !== "REST" && (
-            <CompleteSessionButton sessionId={s.id} completed={s.completed} isFuture={s.dayOfWeek > todayIndex} />
+            <CompleteSessionButton
+              sessionId={s.id}
+              sessionName={s.name}
+              sessionType={s.type}
+              sessionIcon={s.icon}
+              durationMin={s.durationMin}
+              exercises={s.exercises}
+              completed={s.completed}
+              isFuture={s.dayOfWeek > todayIndex}
+            />
           )}
           <button
             onClick={() => setEditOpen(true)}

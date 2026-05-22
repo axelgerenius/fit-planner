@@ -18,6 +18,7 @@ const RANGES: { value: Range; label: string }[] = [
 
 type WeightLog = { date: string; weight: number };
 type HabitLogsData = { byDate: Record<string, number>; totalHabits: number };
+type ExercisePoint = { date: string; weightKg: number | null; reps: string | null; sets: number | null };
 type SessionsData = { byDate: Record<string, number> };
 
 function fmtDay(iso: string) {
@@ -119,21 +120,34 @@ export default function HistoriquePage() {
   const [newWeight, setNewWeight] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  // Progression par exercice
+  const [exerciseNames, setExerciseNames] = useState<string[]>([]);
+  const [selectedExercise, setSelectedExercise] = useState<string>("");
+  const [exercisePoints, setExercisePoints] = useState<ExercisePoint[]>([]);
 
   const loadAll = useCallback(async (days: number) => {
     setLoading(true);
-    const [w, h, s] = await Promise.all([
+    const [w, h, s, names] = await Promise.all([
       fetch(`/api/weight?days=${days}`).then(r => r.json()),
       fetch(`/api/habits/logs?days=${days}`).then(r => r.json()),
       fetch(`/api/stats/sessions?days=${days}`).then(r => r.json()),
+      fetch("/api/workout-logs/exercise-history", { method: "POST" }).then(r => r.json()),
     ]);
     setWeightLogs(w);
     setHabitData(h);
     setSessionsData(s);
+    setExerciseNames(Array.isArray(names) ? names : []);
     setLoading(false);
   }, []);
 
   useEffect(() => { loadAll(range); }, [range, loadAll]);
+
+  useEffect(() => {
+    if (!selectedExercise) { setExercisePoints([]); return; }
+    fetch(`/api/workout-logs/exercise-history?name=${encodeURIComponent(selectedExercise)}`)
+      .then(r => r.json())
+      .then(data => setExercisePoints(Array.isArray(data) ? data : []));
+  }, [selectedExercise]);
 
   async function logWeight(e: React.FormEvent) {
     e.preventDefault();
@@ -249,6 +263,52 @@ export default function HistoriquePage() {
               </ResponsiveContainer>
             ) : (
               <p style={{ fontSize: 13, color: "#7a7268" }}>Aucune séance effectuée sur cette période.</p>
+            )}
+          </Section>
+
+          {/* Progression par exercice */}
+          <Section title="PROGRESSION PAR EXERCICE" color="#f39c12">
+            {exerciseNames.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#7a7268" }}>
+                Valide des séances dans le Carnet pour suivre ta progression.
+              </p>
+            ) : (
+              <>
+                <div style={{ marginBottom: 14 }}>
+                  <p style={{ ...mono, fontSize: 9, color: "#7a7268", letterSpacing: 2, marginBottom: 8 }}>
+                    CHOISIR UN EXERCICE
+                  </p>
+                  <select
+                    value={selectedExercise}
+                    onChange={e => setSelectedExercise(e.target.value)}
+                    style={{ width: "100%", border: "1px solid #d8d0c4", borderRadius: 4, padding: "10px 12px", fontSize: 13, background: "#f5f0e8", color: "#1a1a1a", outline: "none", fontFamily: "inherit" }}
+                  >
+                    <option value="">-- Sélectionner --</option>
+                    {exerciseNames.map(name => (
+                      <option key={name} value={name}>{name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedExercise && exercisePoints.length >= 2 ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={exercisePoints.map(p => ({
+                      date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }),
+                      kg: p.weightKg ?? 0,
+                    }))}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#ede8df" />
+                      <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                      <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                      <Tooltip content={<CustomTooltip unit=" kg" />} />
+                      <Line type="monotone" dataKey="kg" stroke="#f39c12" strokeWidth={2} dot={{ r: 4, fill: "#f39c12" }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : selectedExercise ? (
+                  <p style={{ fontSize: 13, color: "#7a7268" }}>
+                    Pas encore assez de données pour cet exercice (minimum 2 séances).
+                  </p>
+                ) : null}
+              </>
             )}
           </Section>
         </>
