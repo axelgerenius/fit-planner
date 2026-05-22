@@ -54,7 +54,6 @@ const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space 
 const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
 
 const DAY_NAMES_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-const DAY_NAMES_FULL  = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
 const SESSION_ICONS: Record<string, string> = {
   STRENGTH: "🏋️", CARDIO: "🏃", HIIT: "🔥",
@@ -139,8 +138,6 @@ export default function DashboardClient({
               : d.session?.type === "REST" && hPct > 0 ? "#a8d5b5"
               : hPct >= 0.5 ? "#f9d48a"
               : "#ede8df";
-
-            const lightBg = ["#fff", "#ede8df", "#f9d48a", "#a8d5b5"].includes(bg);
 
             return (
               <button
@@ -247,7 +244,8 @@ export default function DashboardClient({
       {/* SÉANCE DU JOUR */}
       <div className="rounded p-4" style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: `4px solid ${s ? SESSION_COLOR[s.type] : "#d8d0c4"}` }}>
         <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px" }}>SÉANCE DU JOUR</p>
-        {s && s.type === "REST" ? (
+        {s && s.type === "REST" && !s.icon ? (
+          // Repos par défaut (non personnalisé) → message NEAT
           <div>
             <p style={{ fontSize: 14, color: "#1a1a1a", marginBottom: 8 }}>Repos 🛌 — récupération active</p>
             <div style={{ background: "#f5f0e8", border: "1px solid #d8d0c4", borderLeft: "3px solid #f39c12", borderRadius: 3, padding: "10px 14px" }}>

@@ -16,20 +16,22 @@ import {
 const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
 const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
 
-// Navigation principale — desktop top bar + mobile bottom bar
-const PRIMARY_NAV = [
-  { href: "/dashboard", label: "Accueil",   icon: "🏠" },
-  { href: "/planning",  label: "Sport",     icon: "🏋️", also: ["/carnet"] },
-  { href: "/nutrition", label: "Nutrition", icon: "🥗", also: ["/courses"] },
-  { href: "/habitudes", label: "Habitudes", icon: "✅" },
+const SPORT_SUBNAV = [
+  { href: "/planning", label: "Programme" },
+  { href: "/carnet",   label: "Carnet" },
 ];
 
-// Desktop uniquement
+const PRIMARY_NAV = [
+  { href: "/dashboard", label: "Accueil",    icon: "🏠",  sub: null },
+  { href: "/planning",  label: "Sport",      icon: "🏋️",  sub: SPORT_SUBNAV, also: ["/carnet"] },
+  { href: "/nutrition", label: "Nutrition",  icon: "🥗",  sub: null, also: ["/courses"] },
+  { href: "/habitudes", label: "Habitudes",  icon: "✅",  sub: null },
+];
+
 const DESKTOP_EXTRA = [
   { href: "/historique", label: "Statistiques" },
 ];
 
-// Drawer "Plus" (mobile)
 const MORE_NAV = [
   { href: "/historique", label: "Statistiques", icon: "📊", desc: "Évolution, poids, habitudes, exercices" },
   { href: "/profil",     label: "Profil",        icon: "👤", desc: "Tes informations & objectif" },
@@ -38,9 +40,11 @@ const MORE_NAV = [
 export default function AppNav({ user }: { user: { name: string; email: string } }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sportSubOpen, setSportSubOpen] = useState(false);
 
   const initials = user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
   const isMoreActive = MORE_NAV.some(l => pathname.startsWith(l.href));
+  const isSportActive = pathname.startsWith("/planning") || pathname.startsWith("/carnet");
 
   function isNavActive(nav: typeof PRIMARY_NAV[0]) {
     return pathname.startsWith(nav.href) || (nav.also?.some(a => pathname.startsWith(a)) ?? false);
@@ -59,8 +63,56 @@ export default function AppNav({ user }: { user: { name: string; email: string }
 
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-0">
-              {[...PRIMARY_NAV, ...DESKTOP_EXTRA].map(link => {
-                const active = pathname.startsWith(link.href) || ("also" in link && (link.also as string[])?.some(a => pathname.startsWith(a)));
+              {PRIMARY_NAV.map(link => {
+                const active = isNavActive(link);
+                if (link.sub) {
+                  // Dropdown Sport
+                  return (
+                    <div key={link.href} style={{ position: "relative" }}
+                      onMouseEnter={() => setSportSubOpen(true)}
+                      onMouseLeave={() => setSportSubOpen(false)}>
+                      <Link href={link.href}
+                        className={`px-3 py-1.5 text-sm font-medium transition-colors flex items-center gap-1 ${active ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
+                        {link.label}
+                        <span style={{ fontSize: 10, opacity: 0.6 }}>▾</span>
+                        {active && <span className="block h-0.5 bg-primary mt-0.5" />}
+                      </Link>
+                      {sportSubOpen && (
+                        <div style={{
+                          position: "absolute", top: "100%", left: 0,
+                          background: "#fff", border: "1px solid #d8d0c4",
+                          borderTop: "2px solid #c0392b", borderRadius: "0 0 4px 4px",
+                          minWidth: 160, zIndex: 20,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        }}>
+                          {link.sub.map(sub => (
+                            <Link key={sub.href} href={sub.href}
+                              style={{
+                                display: "block", padding: "10px 16px",
+                                textDecoration: "none", fontSize: 13,
+                                fontWeight: pathname.startsWith(sub.href) ? 700 : 400,
+                                color: pathname.startsWith(sub.href) ? "#c0392b" : "#1a1a1a",
+                                background: pathname.startsWith(sub.href) ? "#fff5f5" : "#fff",
+                                borderBottom: "1px solid #f5f0e8",
+                              }}>
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return (
+                  <Link key={link.href} href={link.href}
+                    className={`px-3 py-1.5 text-sm font-medium transition-colors ${active ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
+                    {link.label}
+                    {active && <span className="block h-0.5 bg-primary mt-0.5" />}
+                  </Link>
+                );
+              })}
+              {DESKTOP_EXTRA.map(link => {
+                const active = pathname.startsWith(link.href);
                 return (
                   <Link key={link.href} href={link.href}
                     className={`px-3 py-1.5 text-sm font-medium transition-colors ${active ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
@@ -98,6 +150,29 @@ export default function AppNav({ user }: { user: { name: string; email: string }
           </DropdownMenu>
         </div>
       </header>
+
+      {/* ─── SOUS-NAV SPORT (mobile, visible quand Sport est actif) ────────── */}
+      {isSportActive && (
+        <div className="md:hidden sticky top-14 z-10"
+          style={{ background: "#fff", borderBottom: "1px solid #d8d0c4" }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            {SPORT_SUBNAV.map(sub => {
+              const isActive = pathname.startsWith(sub.href);
+              return (
+                <Link key={sub.href} href={sub.href}
+                  style={{
+                    ...mono, fontSize: 12, letterSpacing: 2, padding: "10px 28px",
+                    textDecoration: "none", fontWeight: 700,
+                    color: isActive ? "#1a1a1a" : "#7a7268",
+                    borderBottom: isActive ? "3px solid #c0392b" : "3px solid transparent",
+                  }}>
+                  {sub.label.toUpperCase()}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ─── BOTTOM NAV (mobile) ──────────────────────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20"
