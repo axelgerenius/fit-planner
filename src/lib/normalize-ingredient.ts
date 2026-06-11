@@ -5,13 +5,16 @@
  * - Normalise les pluriels simples
  */
 
+// Convertit les ligatures pour une comparaison homogène (œ→oe, æ→ae)
+function normalizeLigatures(s: string): string {
+  return s.replace(/œ/g, "oe").replace(/Œ/g, "Oe").replace(/æ/g, "ae").replace(/Æ/g, "Ae");
+}
+
 // Table de synonymes explicites → [nom canonique, unité canonique]
 const SYNONYM_MAP: Record<string, [string, string]> = {
   // ─── Œufs
   "oeuf":                  ["Œufs",             "pièce"],
   "oeufs":                 ["Œufs",             "pièce"],
-  "œuf":                   ["Œufs",             "pièce"],
-  "œufs":                  ["Œufs",             "pièce"],
   "oeuf dur":              ["Œufs",             "pièce"],
   "oeufs durs":            ["Œufs",             "pièce"],
   "oeuf poché":            ["Œufs",             "pièce"],
@@ -19,6 +22,10 @@ const SYNONYM_MAP: Record<string, [string, string]> = {
   "oeuf brouillé":         ["Œufs",             "pièce"],
   "oeufs brouillés":       ["Œufs",             "pièce"],
   "oeuf à la coque":       ["Œufs",             "pièce"],
+  "oeufs au plat":         ["Œufs",             "pièce"],
+  "oeuf au plat":          ["Œufs",             "pièce"],
+  "oeufs sautés":          ["Œufs",             "pièce"],
+  "oeuf sauté":            ["Œufs",             "pièce"],
 
   // ─── Volaille
   "blanc de poulet":       ["Blanc de poulet",  "g"],
@@ -66,11 +73,15 @@ const COOKING_WORDS = [
   "rôti", "rôtis", "rôtie", "rôties",
   "grillé", "grillés", "grillée", "grillées",
   "cuit", "cuits", "cuite", "cuites",
-  "à la coque", "au plat",
+  "sauté", "sautés", "sautée", "sautées",
+  "dur", "durs", "dure", "dures",
+  "à la coque", "au plat", "sur le plat",
+  "scramblé", "scramblés",
 ];
 
 export function normalizeIngredient(raw: string): { name: string; unitOverride?: string } {
-  const lower = raw.toLowerCase().trim();
+  // Normalise les ligatures avant tout traitement (œ→oe, etc.)
+  const lower = normalizeLigatures(raw).toLowerCase().trim();
 
   // 1. Cherche un synonyme exact
   if (SYNONYM_MAP[lower]) {
@@ -82,7 +93,6 @@ export function normalizeIngredient(raw: string): { name: string; unitOverride?:
   let cleaned = lower;
   for (const word of COOKING_WORDS) {
     cleaned = cleaned.replace(new RegExp(`\\b${word}\\b`, "gi"), "").trim();
-    // Nettoie les virgules/espaces en surplus
     cleaned = cleaned.replace(/\s+/g, " ").replace(/,\s*$/, "").trim();
   }
 
