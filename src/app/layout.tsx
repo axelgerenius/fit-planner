@@ -25,12 +25,19 @@ export const metadata: Metadata = {
   description:
     "Planning sportif et nutritionnel adapté à votre objectif : prise de masse, perte de gras, remise en forme ou reprise douce.",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "FitPlanner",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f0e8",
+  themeColor: "#1a1a1a",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

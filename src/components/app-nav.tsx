@@ -34,7 +34,6 @@ const DESKTOP_EXTRA = [
 
 const MORE_NAV = [
   { href: "/historique", label: "Statistiques", icon: "📊", desc: "Évolution, poids, habitudes, exercices" },
-  { href: "/profil",     label: "Profil",        icon: "👤", desc: "Tes informations & objectif" },
 ];
 
 export default function AppNav({ user }: { user: { name: string; email: string } }) {

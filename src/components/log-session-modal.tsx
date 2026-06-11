@@ -120,9 +120,9 @@ export default function LogSessionModal({ sessionId, sessionName, sessionType, s
           <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ flex: 1 }}>
               <p style={{ ...mono, fontSize: 9, color: "#7a7268", letterSpacing: 2, marginBottom: 6 }}>DURÉE RÉELLE (min)</p>
-              <input type="number" min="1" max="600" value={duration}
+              <input type="number" inputMode="numeric" min="1" max="600" value={duration}
                 onChange={e => setDuration(e.target.value)}
-                style={{ width: "100%", border: "1px solid #d8d0c4", borderRadius: 6, padding: "10px", fontSize: 15, background: "#f5f0e8", color: "#1a1a1a", outline: "none", boxSizing: "border-box" }} />
+                style={{ width: "100%", border: "1px solid #d8d0c4", borderRadius: 6, padding: "10px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none", boxSizing: "border-box" }} />
             </div>
           </div>
 
@@ -141,19 +141,21 @@ export default function LogSessionModal({ sessionId, sessionName, sessionType, s
               <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 46px 60px 58px 50px 24px", gap: 4, marginBottom: 6 }}>
                 <input value={row.name} onChange={e => updateRow(i, "name", e.target.value)}
                   placeholder="Squat…"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 6px", fontSize: 12, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }} />
-                <input type="number" min="1" max="99" value={row.sets} onChange={e => updateRow(i, "sets", e.target.value)}
+                  autoComplete="off" autoCorrect="off" autoCapitalize="sentences" spellCheck={false}
+                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 6px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }} />
+                <input type="number" inputMode="numeric" min="1" max="99" value={row.sets} onChange={e => updateRow(i, "sets", e.target.value)}
                   placeholder="3"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 12, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
+                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
                 <input value={row.reps} onChange={e => updateRow(i, "reps", e.target.value)}
                   placeholder="12"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 12, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
-                <input type="number" min="0" max="999" step="0.5" value={row.weightKg} onChange={e => updateRow(i, "weightKg", e.target.value)}
+                  inputMode="numeric" autoComplete="off"
+                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
+                <input type="number" inputMode="decimal" min="0" max="999" step="0.5" value={row.weightKg} onChange={e => updateRow(i, "weightKg", e.target.value)}
                   placeholder="kg"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 12, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
-                <input type="number" min="0" max="600" value={row.restSec} onChange={e => updateRow(i, "restSec", e.target.value)}
+                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
+                <input type="number" inputMode="numeric" min="0" max="600" value={row.restSec} onChange={e => updateRow(i, "restSec", e.target.value)}
                   placeholder="60s"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 12, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
+                  style={{ border: "1px solid #d8d0c4", borderRadius: 4, padding: "8px 4px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none", textAlign: "center" }} />
                 <button onClick={() => removeRow(i)}
                   style={{ background: "none", border: "none", cursor: "pointer", color: "#d8d0c4", fontSize: 16, padding: 0, lineHeight: 1, alignSelf: "center" }}>×</button>
               </div>

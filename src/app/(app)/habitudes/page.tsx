@@ -214,7 +214,11 @@ export default function HabitudesPage() {
               onChange={e => setNewName(e.target.value)}
               placeholder="Ex: Boire 2L d'eau"
               required
-              style={{ flex: 1, border: "1px solid #d8d0c4", borderRadius: 3, padding: "10px 12px", fontSize: 13, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
+              spellCheck={false}
+              style={{ flex: 1, border: "1px solid #d8d0c4", borderRadius: 3, padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }}
             />
           </div>
           <div style={{ marginBottom: 16 }}>

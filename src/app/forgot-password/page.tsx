@@ -81,8 +81,10 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
-                    className="w-full text-sm outline-none"
-                    style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", background: "#f5f0e8", color: "#1a1a1a" }}
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    className="w-full outline-none"
+                    style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a" }}
                   />
                 </div>
 

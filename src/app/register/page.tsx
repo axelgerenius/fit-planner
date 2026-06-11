@@ -55,9 +55,9 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {[
-              { name: "name", label: "PRÉNOM", type: "text", placeholder: "Alex" },
-              { name: "email", label: "EMAIL", type: "email", placeholder: "vous@exemple.com" },
-              { name: "password", label: "MOT DE PASSE", type: "password", placeholder: "Min. 6 caractères", minLength: 6 },
+              { name: "name", label: "PRÉNOM", type: "text", placeholder: "Alex", autoComplete: "given-name", autoCapitalize: "words" },
+              { name: "email", label: "EMAIL", type: "email", placeholder: "vous@exemple.com", autoComplete: "email", autoCapitalize: "none" },
+              { name: "password", label: "MOT DE PASSE", type: "password", placeholder: "Min. 6 caractères", minLength: 6, autoComplete: "new-password", autoCapitalize: "none" },
             ].map((field) => (
               <div key={field.name}>
                 <label style={{ ...mono, fontSize: "10px", color: "#7a7268", display: "block", marginBottom: "6px", letterSpacing: "1px" }}>
@@ -69,8 +69,10 @@ export default function RegisterPage() {
                   required
                   placeholder={field.placeholder}
                   minLength={field.minLength}
-                  className="w-full text-sm outline-none"
-                  style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", background: "#f5f0e8", color: "#1a1a1a" }}
+                  autoComplete={field.autoComplete}
+                  autoCapitalize={field.autoCapitalize}
+                  className="w-full outline-none"
+                  style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a" }}
                 />
               </div>
             ))}
