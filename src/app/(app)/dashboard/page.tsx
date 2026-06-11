@@ -13,21 +13,27 @@ export default async function DashboardPage() {
   const session = await auth();
   const userId = session!.user!.id!;
 
-  // Utilise l'heure locale (pas UTC) pour éviter les décalages après minuit
   const now = new Date();
-  const todayDow = now.getDay(); // 0=Dim … 6=Sam en heure locale
-  const todayIndex = todayDow === 0 ? 6 : todayDow - 1; // 0=Lun … 6=Dim
+  const todayDow = now.getDay();
+  const todayIndex = todayDow === 0 ? 6 : todayDow - 1;
 
-  // Début de journée locale → converti en UTC pour les requêtes Prisma
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
   const weekStart = new Date(today);
   weekStart.setDate(today.getDate() - todayIndex);
 
   const streakFrom = new Date(today);
   streakFrom.setDate(today.getDate() - 59);
 
-  const [profile, workoutPlan, nutritionPlan, totalHabits, weekLogs, streakLogs] = await Promise.all([
+  const lastWeek = new Date(today);
+  lastWeek.setDate(today.getDate() - 7);
+
+  const [
+    profile, workoutPlan, nutritionPlan,
+    totalHabits, weekLogs, streakLogs,
+    todayHabitsRaw, todayHabitLogsRaw,
+    latestWeightLog, prevWeightLog,
+    totalSessionCount,
+  ] = await Promise.all([
     prisma.userProfile.findUnique({ where: { userId } }),
     prisma.workoutPlan.findFirst({
       where: { userId, isActive: true },
@@ -46,16 +52,34 @@ export default async function DashboardPage() {
       where: { userId, date: { gte: streakFrom } },
       select: { date: true },
     }),
+    prisma.habit.findMany({
+      where: { userId, isActive: true },
+      orderBy: { createdAt: "asc" },
+      take: 5,
+    }),
+    prisma.habitLog.findMany({
+      where: { userId, date: today },
+      select: { habitId: true },
+    }),
+    prisma.weightLog.findFirst({
+      where: { userId },
+      orderBy: { date: "desc" },
+    }),
+    prisma.weightLog.findFirst({
+      where: { userId, date: { lt: today } },
+      orderBy: { date: "desc" },
+    }),
+    prisma.workoutLog.count({ where: { userId } }),
   ]);
 
-  // Habits per day-of-week this week (0=Mon)
+  // Habits per day-of-week this week
   const habitsByDay: number[] = Array(7).fill(0);
   for (const log of weekLogs) {
     const d = new Date(log.date);
     habitsByDay[(d.getDay() + 6) % 7]++;
   }
 
-  // Streak: consecutive days with all habits done, going back from today
+  // Streak: consecutive days with all habits done
   let streak = 0;
   if (totalHabits > 0) {
     const byDate: Record<string, number> = {};
@@ -72,11 +96,9 @@ export default async function DashboardPage() {
     }
   }
 
-  // Weekly sessions stats
   const completedSessions = workoutPlan?.sessions.filter(s => s.completed).length ?? 0;
   const totalSessions = workoutPlan?.sessions.filter(s => s.type !== "REST").length ?? 0;
 
-  // Weekly habits score (% over days elapsed this week)
   const daysElapsed = todayIndex + 1;
   const weeklyHabitsTotal = totalHabits * daysElapsed;
   const weeklyHabitsDone = habitsByDay.slice(0, daysElapsed).reduce((a, b) => a + b, 0);
@@ -94,6 +116,15 @@ export default async function DashboardPage() {
     };
   });
 
+  // Today's habits with done status
+  const doneIds = new Set(todayHabitLogsRaw.map(l => l.habitId));
+  const todayHabits = todayHabitsRaw.map(h => ({
+    id: h.id,
+    name: h.name,
+    emoji: h.emoji,
+    done: doneIds.has(h.id),
+  }));
+
   return (
     <DashboardClient
       firstName={session?.user?.name?.split(" ")[0] ?? ""}
@@ -105,6 +136,10 @@ export default async function DashboardPage() {
       totalSessions={totalSessions}
       weeklyHabitsPct={weeklyHabitsPct}
       days={days}
+      todayHabits={todayHabits}
+      latestWeight={latestWeightLog?.weight ?? null}
+      prevWeight={prevWeightLog?.weight ?? null}
+      totalSessionCount={totalSessionCount}
     />
   );
 }
