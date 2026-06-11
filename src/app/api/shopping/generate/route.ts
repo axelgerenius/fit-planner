@@ -3,6 +3,15 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeIngredient } from "@/lib/normalize-ingredient";
 
+// Unités dénombrables : on arrondit au plafond (pas de demi-œuf)
+const COUNTABLE_UNITS = new Set(["pièce", "pièces", "tranche", "tranches", "gousse", "gousses", "portion", "portions", "unité", "unités"]);
+
+function roundQuantity(quantity: number, unit: string): number {
+  if (COUNTABLE_UNITS.has(unit.toLowerCase())) return Math.ceil(quantity);
+  // Poids / volume : arrondi à l'entier le plus proche
+  return Math.round(quantity);
+}
+
 function getWeekStart() {
   const now = new Date();
   const day = now.getDay();
@@ -69,7 +78,7 @@ export async function POST() {
       items: {
         create: Array.from(aggregated.values()).map((item) => ({
           name: item.name,
-          quantity: Math.round(item.quantity * 10) / 10,
+          quantity: roundQuantity(item.quantity, item.unit),
           unit: item.unit,
           category: item.category as never,
           checked: false,

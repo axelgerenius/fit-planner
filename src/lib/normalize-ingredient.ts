@@ -96,6 +96,9 @@ export function normalizeIngredient(raw: string): { name: string; unitOverride?:
     cleaned = cleaned.replace(/\s+/g, " ").replace(/,\s*$/, "").trim();
   }
 
+  // Retire les lettres/abréviations orphelines en fin de chaîne (ex: "oeufs s" → "oeufs")
+  cleaned = cleaned.replace(/\s+[a-zàâéèêëîïôùûüç]\.?$/i, "").trim();
+
   // 3. Vérifie à nouveau dans la table après nettoyage
   if (SYNONYM_MAP[cleaned]) {
     const [name, unit] = SYNONYM_MAP[cleaned];
