@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   description:
     "Planning sportif et nutritionnel adapté à votre objectif : prise de masse, perte de gras, remise en forme ou reprise douce.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
