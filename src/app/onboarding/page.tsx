@@ -109,7 +109,7 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div className="text-center mb-6">
           <h1 style={{ ...display, fontSize: "36px", letterSpacing: "4px", color: "#1a1a1a", lineHeight: 1 }}>
-            FIT<span style={{ color: "#c0392b" }}>PLANNER</span>
+            VITA<span style={{ color: "#c0392b" }}>LOOP</span>
           </h1>
         </div>
 

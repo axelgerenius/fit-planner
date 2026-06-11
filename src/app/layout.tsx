@@ -21,14 +21,14 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FitPlanner – Sport & Nutrition personnalisés",
+  title: "VitaLoop – Sport & Nutrition personnalisés",
   description:
     "Planning sportif et nutritionnel adapté à votre objectif : prise de masse, perte de gras, remise en forme ou reprise douce.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "FitPlanner",
+    title: "VitaLoop",
   },
 };
 

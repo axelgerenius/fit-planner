@@ -1,6 +1,6 @@
 {
-  "name": "FitPlanner",
-  "short_name": "FitPlanner",
+  "name": "VitaLoop",
+  "short_name": "VitaLoop",
   "description": "Sport & Nutrition personnalisés",
   "start_url": "/dashboard",
   "display": "standalone",

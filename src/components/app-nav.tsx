@@ -57,7 +57,7 @@ export default function AppNav({ user }: { user: { name: string; email: string }
           <div className="flex items-center gap-6">
             <Link href="/dashboard"
               style={{ ...display, fontSize: "22px", letterSpacing: "2px", color: "#1a1a1a", textDecoration: "none" }}>
-              FIT<span style={{ color: "#c0392b" }}>PLANNER</span>
+              VITA<span style={{ color: "#c0392b" }}>LOOP</span>
             </Link>
 
             {/* Desktop nav */}

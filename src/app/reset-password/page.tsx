@@ -136,7 +136,7 @@ export default function ResetPasswordPage() {
       <div className="w-full" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-8">
           <h1 style={{ ...display, fontSize: "42px", letterSpacing: "4px", color: "#1a1a1a", lineHeight: 1 }}>
-            FIT<span style={{ color: "#c0392b" }}>PLANNER</span>
+            VITA<span style={{ color: "#c0392b" }}>LOOP</span>
           </h1>
           <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginTop: "6px", letterSpacing: "2px" }}>
             SPORT & NUTRITION PERSONNALISÉS
