@@ -43,8 +43,13 @@ Config conteneur :
 ✅ Port : 3000 → 3000
 
 Variable	      Valeur
+
 DATABASE_URL	  postgresql://postgres.mesdyebchkxfhfsgvobx:n94DBeYuuBXjUIEC@aws-1-eu-west-2.pooler.supabase.com:6543/postgres   [postgresql://postgres:n94DBeYuuBXjUIEC@db.mesdyebchkxfhfsgvobx.supabase.co:5432/postgres]
+
 NEXTAUTH_SECRET	  itplanner-secret-prod-2026-axel
+
 NEXTAUTH_URL	  https://fit.choucroutetropicale.fr
+
 AUTH_TRUST_HOST   true
+
 RESEND_API_KEY    re_WodGx8xY_DYjV4fbq49vqo4ncFLb7bkVs
