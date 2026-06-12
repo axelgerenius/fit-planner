@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Config Conteneur NAS
+
+Config conteneur :
+
+✅ Redémarrage automatique : Oui
+✅ Port : 3000 → 3000
+
+Variable	      Valeur
+DATABASE_URL	  postgresql://postgres.mesdyebchkxfhfsgvobx:n94DBeYuuBXjUIEC@aws-1-eu-west-2.pooler.supabase.com:6543/postgres   [postgresql://postgres:n94DBeYuuBXjUIEC@db.mesdyebchkxfhfsgvobx.supabase.co:5432/postgres]
+NEXTAUTH_SECRET	  itplanner-secret-prod-2026-axel
+NEXTAUTH_URL	  https://fit.choucroutetropicale.fr
+AUTH_TRUST_HOST   true
+RESEND_API_KEY    re_WodGx8xY_DYjV4fbq49vqo4ncFLb7bkVs
