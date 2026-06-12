@@ -22,14 +22,11 @@ const EQUIPMENT_LABELS: Record<string, string> = {
   NONE: "Aucun matériel",
 };
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 function Row({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 0", borderBottom: "1px solid #F3F4F6" }}>
-      <span style={{ fontSize: 13, color: "#6B7280" }}>{label}</span>
-      <span style={{ ...mono, fontSize: 12, fontWeight: 700, color: accent ? "#FF6500" : "#111827" }}>
+      <span style={{ fontSize: 14, color: "#6B7280" }}>{label}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: accent ? "#FF6500" : "#111827" }}>
         {value}
       </span>
     </div>
@@ -46,8 +43,8 @@ function Section({ title, accent, children }: { title: string; accent?: string; 
       borderLeft: `4px solid ${accent ?? "#E5E7EB"}`,
     }}>
       <div style={{ padding: "13px 20px", borderBottom: "1px solid #F3F4F6" }}>
-        <p style={{ ...mono, fontSize: 9, letterSpacing: 2, color: "#111827", fontWeight: 700 }}>
-          {title.toUpperCase()}
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase" }}>
+          {title}
         </p>
       </div>
       <div style={{ padding: "0 20px" }}>
@@ -72,9 +69,9 @@ export default async function ProfilPage() {
     <div style={{ maxWidth: 520, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>MON PROFIL</h1>
-        <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>
-          {user?.name?.toUpperCase() ?? "—"}
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 4, letterSpacing: 0.5 }}>Mon profil</h1>
+        <p style={{ fontSize: 13, color: "#6B7280" }}>
+          {user?.name ?? "—"}
         </p>
       </div>
 
@@ -110,21 +107,19 @@ export default async function ProfilPage() {
         <Link
           href="/onboarding"
           style={{
-            ...mono,
-            fontSize: 11,
+            fontSize: 14,
+            fontWeight: 700,
             background: "#FF6500",
             color: "#fff",
             padding: "14px",
             borderRadius: 14,
-            letterSpacing: 1,
             textDecoration: "none",
             display: "block",
             textAlign: "center",
-            fontWeight: 600,
             marginTop: 4,
           }}
         >
-          RECONFIGURER MON PROGRAMME
+          Reconfigurer mon programme
         </Link>
       </div>
     </div>

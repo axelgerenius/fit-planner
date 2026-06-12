@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 const EMOJI_OPTIONS = ["✅", "💧", "🏃", "🥗", "😴", "📚", "🧘", "🚭", "🥤", "🍎", "💪", "🧹", "🌅", "🚶", "🎯"];
 
 const QUOTES = [
@@ -101,10 +98,10 @@ export default function HabitudesPage() {
     <div style={{ maxWidth: 600, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>
-          MES HABITUDES
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 4, letterSpacing: 0.5 }}>
+          Mes habitudes
         </h1>
-        <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1, textTransform: "capitalize" }}>
+        <p style={{ fontSize: 13, color: "#6B7280", textTransform: "capitalize" }}>
           {todayLabel()}
         </p>
       </div>
@@ -113,8 +110,8 @@ export default function HabitudesPage() {
       {total > 0 && (
         <div style={{ ...card, padding: "16px 20px", marginBottom: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <span style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>PROGRESSION DU JOUR</span>
-            <span style={{ ...mono, fontSize: 14, color: allDone ? "#22C55E" : "#FF6500", fontWeight: 700 }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", letterSpacing: 0.5 }}>Progression du jour</span>
+            <span style={{ fontSize: 15, fontWeight: 800, color: allDone ? "#22C55E" : "#FF6500" }}>
               {done}/{total}
             </span>
           </div>
@@ -122,8 +119,8 @@ export default function HabitudesPage() {
             <div style={{ height: "100%", width: `${pct}%`, background: allDone ? "#22C55E" : "#FF6500", borderRadius: 99, transition: "width 0.3s" }} />
           </div>
           {allDone && (
-            <p style={{ ...mono, fontSize: 10, color: "#22C55E", letterSpacing: 1, marginTop: 8, textAlign: "right" }}>
-              🎉 TOUTES COMPLÉTÉES !
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#22C55E", marginTop: 8, textAlign: "right" }}>
+              🎉 Toutes complétées !
             </p>
           )}
         </div>
@@ -132,11 +129,11 @@ export default function HabitudesPage() {
       {/* Habits list */}
       <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 8 }}>
         {loading ? (
-          <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
+          <p style={{ fontSize: 13, color: "#6B7280" }}>Chargement…</p>
         ) : habits.length === 0 ? (
           <div style={{ ...card, padding: 40, textAlign: "center" }}>
             <p style={{ fontSize: 40, marginBottom: 12 }}>🌱</p>
-            <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>AUCUNE HABITUDE DÉFINIE</p>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#6B7280" }}>Aucune habitude définie</p>
             <p style={{ fontSize: 13, color: "#6B7280", marginTop: 6 }}>Ajoute ta première habitude ci-dessous.</p>
           </div>
         ) : (
@@ -163,7 +160,7 @@ export default function HabitudesPage() {
                 <span style={{ fontSize: 22, flexShrink: 0 }}>{habit.emoji}</span>
                 <span style={{
                   flex: 1,
-                  fontSize: 14,
+                  fontSize: 15,
                   color: isDone ? "#6B7280" : "#111827",
                   textDecoration: isDone ? "line-through" : "none",
                   fontWeight: isDone ? 400 : 500,
@@ -201,13 +198,13 @@ export default function HabitudesPage() {
         <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.7, fontStyle: "italic", marginBottom: 6 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
-        <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>— {quote.author.toUpperCase()}</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>— {quote.author}</p>
       </div>
 
       {/* Add habit */}
       {showForm ? (
         <form onSubmit={addHabit} style={{ ...card, padding: 20 }}>
-          <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 14 }}>NOUVELLE HABITUDE</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase", marginBottom: 14 }}>Nouvelle habitude</p>
           <input
             value={newName}
             onChange={e => setNewName(e.target.value)}
@@ -220,7 +217,7 @@ export default function HabitudesPage() {
             style={{ width: "100%", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 14px", fontSize: 16, background: "#F9FAFB", color: "#111827", outline: "none", boxSizing: "border-box", marginBottom: 14 }}
           />
           <div style={{ marginBottom: 18 }}>
-            <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 8 }}>EMOJI</p>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase", marginBottom: 8 }}>Emoji</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {EMOJI_OPTIONS.map(em => (
                 <button
@@ -243,16 +240,16 @@ export default function HabitudesPage() {
             <button
               type="submit"
               disabled={saving}
-              style={{ ...mono, fontSize: 11, background: "#FF6500", color: "#fff", padding: "11px 24px", borderRadius: 10, border: "none", cursor: "pointer", letterSpacing: 1, opacity: saving ? 0.6 : 1 }}
+              style={{ fontSize: 14, fontWeight: 700, background: "#FF6500", color: "#fff", padding: "11px 24px", borderRadius: 10, border: "none", cursor: "pointer", opacity: saving ? 0.6 : 1 }}
             >
-              {saving ? "…" : "AJOUTER"}
+              {saving ? "…" : "Ajouter"}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              style={{ ...mono, fontSize: 11, background: "transparent", color: "#6B7280", padding: "11px 20px", borderRadius: 10, border: "1px solid #E5E7EB", cursor: "pointer", letterSpacing: 1 }}
+              style={{ fontSize: 14, fontWeight: 600, background: "transparent", color: "#6B7280", padding: "11px 20px", borderRadius: 10, border: "1px solid #E5E7EB", cursor: "pointer" }}
             >
-              ANNULER
+              Annuler
             </button>
           </div>
         </form>
@@ -260,13 +257,13 @@ export default function HabitudesPage() {
         <button
           onClick={() => setShowForm(true)}
           style={{
-            ...mono, fontSize: 11, background: "#fff", color: "#FF6500",
+            fontSize: 14, fontWeight: 700, background: "#fff", color: "#FF6500",
             padding: "14px 20px", borderRadius: 14, border: "2px dashed #FF6500",
-            cursor: "pointer", letterSpacing: 1, width: "100%",
+            cursor: "pointer", width: "100%",
             boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           }}
         >
-          + AJOUTER UNE HABITUDE
+          + Ajouter une habitude
         </button>
       )}
     </div>

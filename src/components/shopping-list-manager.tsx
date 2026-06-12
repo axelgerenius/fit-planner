@@ -21,8 +21,6 @@ const CATEGORY_LABELS: Record<string, { label: string; icon: string }> = {
   OTHER:              { label: "Autres",                      icon: "📦" },
 };
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-
 export default function ShoppingListManager({ listId, initialItems }: { listId: string; initialItems: Item[] }) {
   const [checkedState, setCheckedState] = useState<Record<string, boolean>>(
     Object.fromEntries(initialItems.map(i => [i.id, i.checked]))
@@ -55,16 +53,16 @@ export default function ShoppingListManager({ listId, initialItems }: { listId: 
       <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "16px 20px", marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
           <div>
-            <span style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{checked}</span>
-            <span style={{ fontSize: 13, color: "#6B7280" }}> / {total} articles</span>
+            <span style={{ fontWeight: 700, fontSize: 15, color: "#111827" }}>{checked}</span>
+            <span style={{ fontSize: 14, color: "#6B7280" }}> / {total} articles</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ ...mono, fontSize: 13, color: allDone ? "#22C55E" : "#FF6500", fontWeight: 700 }}>{pct}%</span>
+            <span style={{ fontSize: 15, fontWeight: 800, color: allDone ? "#22C55E" : "#FF6500" }}>{pct}%</span>
             <button
               onClick={reset}
-              style={{ ...mono, fontSize: 10, padding: "6px 14px", borderRadius: 8, border: "1.5px solid #E5E7EB", background: "transparent", color: "#6B7280", cursor: "pointer" }}
+              style={{ fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 8, border: "1.5px solid #E5E7EB", background: "transparent", color: "#6B7280", cursor: "pointer" }}
             >
-              RESET
+              Reset
             </button>
           </div>
         </div>
@@ -72,8 +70,8 @@ export default function ShoppingListManager({ listId, initialItems }: { listId: 
           <div style={{ height: "100%", background: allDone ? "#22C55E" : "#FF6500", width: `${pct}%`, borderRadius: 99, transition: "width 0.4s" }} />
         </div>
         {allDone && (
-          <p style={{ ...mono, fontSize: 10, color: "#22C55E", letterSpacing: 1, marginTop: 8, textAlign: "right" }}>
-            🎉 TOUS LES ARTICLES COCHÉS !
+          <p style={{ fontSize: 12, fontWeight: 700, color: "#22C55E", marginTop: 8, textAlign: "right" }}>
+            🎉 Tous les articles cochés !
           </p>
         )}
       </div>
@@ -87,10 +85,10 @@ export default function ShoppingListManager({ listId, initialItems }: { listId: 
             {/* Category header */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", borderBottom: "1px solid #F3F4F6" }}>
               <span style={{ fontSize: 16 }}>{icon}</span>
-              <span style={{ ...mono, fontSize: 10, letterSpacing: 1, color: "#111827", fontWeight: 700 }}>
-                {label.toUpperCase()}
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>
+                {label}
               </span>
-              <span style={{ ...mono, fontSize: 10, color: "#6B7280", marginLeft: "auto" }}>
+              <span style={{ fontSize: 12, color: "#6B7280", marginLeft: "auto" }}>
                 {items.filter(i => checkedState[i.id]).length}/{items.length}
               </span>
             </div>
@@ -129,7 +127,7 @@ export default function ShoppingListManager({ listId, initialItems }: { listId: 
                   <span style={{ flex: 1, fontSize: 14, fontWeight: isChecked ? 400 : 500, color: isChecked ? "#9CA3AF" : "#111827", textDecoration: isChecked ? "line-through" : "none" }}>
                     {item.name}
                   </span>
-                  <span style={{ ...mono, fontSize: 11, color: "#6B7280" }}>
+                  <span style={{ fontSize: 13, color: "#6B7280" }}>
                     {item.quantity} {item.unit}
                   </span>
                 </div>

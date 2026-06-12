@@ -4,9 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 const inputStyle: React.CSSProperties = {
   width: "100%", border: "1px solid #E5E7EB", borderRadius: 10,
   padding: "11px 14px", background: "#F9FAFB", color: "#111827",
@@ -49,26 +46,26 @@ export default function RegisterPage() {
       <div style={{ width: "100%", maxWidth: 400 }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <h1 style={{ ...display, fontSize: 44, letterSpacing: 4, lineHeight: 1, color: "#111827" }}>
+          <h1 style={{ fontSize: 44, fontWeight: 800, lineHeight: 1, color: "#111827", letterSpacing: 0.5 }}>
             VITA<span style={{ color: "#FF6500" }}>LOOP</span>
           </h1>
-          <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginTop: 6, letterSpacing: 2 }}>
-            SPORT & NUTRITION PERSONNALISÉS
+          <p style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginTop: 6, letterSpacing: 1 }}>
+            Sport & nutrition personnalisés
           </p>
         </div>
 
         {/* Card */}
         <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", padding: "28px 28px 24px" }}>
-          <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827", marginBottom: 22 }}>CRÉER UN COMPTE</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827", marginBottom: 22 }}>Créer un compte</h2>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
-              { name: "name", label: "PRÉNOM", type: "text", placeholder: "Alex", autoComplete: "given-name", autoCapitalize: "words" },
-              { name: "email", label: "EMAIL", type: "email", placeholder: "vous@exemple.com", autoComplete: "email", autoCapitalize: "none" },
-              { name: "password", label: "MOT DE PASSE", type: "password", placeholder: "Min. 6 caractères", minLength: 6, autoComplete: "new-password", autoCapitalize: "none" },
+              { name: "name", label: "Prénom", type: "text", placeholder: "Alex", autoComplete: "given-name", autoCapitalize: "words" },
+              { name: "email", label: "Email", type: "email", placeholder: "vous@exemple.com", autoComplete: "email", autoCapitalize: "none" },
+              { name: "password", label: "Mot de passe", type: "password", placeholder: "Min. 6 caractères", minLength: 6, autoComplete: "new-password", autoCapitalize: "none" },
             ].map((field) => (
               <div key={field.name}>
-                <label style={{ ...mono, fontSize: 10, color: "#6B7280", display: "block", marginBottom: 6, letterSpacing: 1 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", display: "block", marginBottom: 6 }}>
                   {field.label}
                 </label>
                 <input
@@ -85,7 +82,7 @@ export default function RegisterPage() {
             ))}
 
             {error && (
-              <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+              <p style={{ fontSize: 13, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
                 {error}
               </p>
             )}
@@ -94,21 +91,21 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               style={{
-                ...mono, fontSize: 11, letterSpacing: 1,
+                fontSize: 14, fontWeight: 700,
                 background: "#FF6500", color: "#fff",
                 padding: "13px", borderRadius: 12, border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
                 opacity: loading ? 0.7 : 1,
-                fontWeight: 600, marginTop: 4,
+                marginTop: 4,
               }}
             >
-              {loading ? "CRÉATION…" : "CRÉER MON COMPTE"}
+              {loading ? "Création…" : "Créer mon compte"}
             </button>
           </form>
 
           <p style={{ textAlign: "center", fontSize: 13, color: "#6B7280", marginTop: 18 }}>
             Déjà un compte ?{" "}
-            <Link href="/login" style={{ color: "#FF6500", fontWeight: 600, textDecoration: "none" }}>
+            <Link href="/login" style={{ color: "#FF6500", fontWeight: 700, textDecoration: "none" }}>
               Se connecter
             </Link>
           </p>

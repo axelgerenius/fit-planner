@@ -6,14 +6,11 @@ import {
   XAxis, YAxis, Tooltip, CartesianGrid,
 } from "recharts";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 type Range = 7 | 30 | 365;
 const RANGES: { value: Range; label: string }[] = [
-  { value: 7,   label: "1 SEM" },
-  { value: 30,  label: "1 MOIS" },
-  { value: 365, label: "1 AN" },
+  { value: 7,   label: "1 sem" },
+  { value: 30,  label: "1 mois" },
+  { value: 365, label: "1 an" },
 ];
 
 type WeightLog = { date: string; weight: number };
@@ -72,7 +69,7 @@ function Section({ title, accentColor, children }: { title: string; accentColor:
       padding: "20px",
       marginBottom: 14,
     }}>
-      <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 16 }}>{title}</p>
+      <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase", marginBottom: 16 }}>{title}</p>
       {children}
     </div>
   );
@@ -82,21 +79,21 @@ function CustomTooltip({ active, payload, label, unit }: { active?: boolean; pay
   if (!active || !payload?.length) return null;
   return (
     <div style={{ background: "#fff", border: "1px solid #E5E7EB", padding: "8px 12px", borderRadius: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-      <p style={{ ...mono, fontSize: 10, color: "#6B7280" }}>{label}</p>
-      <p style={{ ...mono, fontSize: 13, color: "#111827", fontWeight: 700 }}>{payload[0].value}{unit}</p>
+      <p style={{ fontSize: 11, color: "#6B7280", marginBottom: 2 }}>{label}</p>
+      <p style={{ fontSize: 14, fontWeight: 800, color: "#111827" }}>{payload[0].value}{unit}</p>
     </div>
   );
 }
 
 function RangeBar({ range, onChange }: { range: Range; onChange: (r: Range) => void }) {
   return (
-    <div style={{ display: "flex", gap: 6, background: "#F3F4F6", borderRadius: 10, padding: 4 }}>
+    <div style={{ display: "flex", gap: 4, background: "#F3F4F6", borderRadius: 10, padding: 4 }}>
       {RANGES.map(r => (
         <button
           key={r.value}
           onClick={() => onChange(r.value)}
           style={{
-            ...mono, fontSize: 10, letterSpacing: 1,
+            fontSize: 12, fontWeight: 600,
             padding: "6px 14px", borderRadius: 8,
             border: "none",
             background: range === r.value ? "#FF6500" : "transparent",
@@ -164,8 +161,8 @@ export default function HistoriquePage() {
 
   const isYearly = range === 365;
   const xInterval = range === 7 ? 0 : range === 30 ? 6 : 4;
-  const rangeLabel = range === 7 ? "7 DERNIERS JOURS" : range === 30 ? "30 DERNIERS JOURS" : "12 DERNIERS MOIS";
-  const groupLabel = isYearly ? "/ SEMAINE" : "/ JOUR";
+  const rangeLabel = range === 7 ? "7 derniers jours" : range === 30 ? "30 derniers jours" : "12 derniers mois";
+  const groupLabel = isYearly ? "/ semaine" : "/ jour";
 
   const habitChartData = habitData
     ? (isYearly ? buildWeeklyPoints(habitData.byDate, range, "habitudes") : buildDailyPoints(habitData.byDate, range, "habitudes"))
@@ -175,29 +172,31 @@ export default function HistoriquePage() {
     : [];
   const weightChartData = weightLogs.map(l => ({ date: fmtDay(l.date), poids: l.weight }));
 
+  const axisTick = { fontSize: 10, fill: "#9CA3AF" };
+
   return (
     <div style={{ maxWidth: 700, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>HISTORIQUE</h1>
-          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>{rangeLabel}</p>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 4, letterSpacing: 0.5 }}>Historique</h1>
+          <p style={{ fontSize: 13, color: "#6B7280" }}>{rangeLabel}</p>
         </div>
         <RangeBar range={range} onChange={setRange} />
       </div>
 
       {loading ? (
-        <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
+        <p style={{ fontSize: 13, color: "#6B7280" }}>Chargement…</p>
       ) : (
         <>
           {/* Poids */}
-          <Section title="ÉVOLUTION DU POIDS (kg)" accentColor="#3B82F6">
+          <Section title="Évolution du poids (kg)" accentColor="#3B82F6">
             {weightChartData.length >= 2 ? (
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={weightChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
-                  <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
+                  <XAxis dataKey="date" tick={axisTick} interval={xInterval} />
+                  <YAxis domain={["auto", "auto"]} tick={axisTick} />
                   <Tooltip content={<CustomTooltip unit=" kg" />} />
                   <Line type="monotone" dataKey="poids" stroke="#3B82F6" strokeWidth={2} dot={range === 365 ? false : { r: 3, fill: "#3B82F6" }} />
                 </LineChart>
@@ -210,23 +209,23 @@ export default function HistoriquePage() {
                 type="number" step="0.1" min="20" max="300"
                 value={newWeight} onChange={e => setNewWeight(e.target.value)}
                 placeholder="Ex: 75.5"
-                style={{ flex: 1, border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 13, background: "#F9FAFB", color: "#111827", outline: "none" }}
+                style={{ flex: 1, border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 14, background: "#F9FAFB", color: "#111827", outline: "none" }}
               />
               <button type="submit" disabled={saving}
-                style={{ ...mono, fontSize: 10, background: "#3B82F6", color: "#fff", padding: "10px 18px", borderRadius: 10, border: "none", cursor: "pointer", letterSpacing: 1, opacity: saving ? 0.6 : 1 }}>
-                {saving ? "…" : "AJOUTER"}
+                style={{ fontSize: 13, fontWeight: 700, background: "#3B82F6", color: "#fff", padding: "10px 18px", borderRadius: 10, border: "none", cursor: "pointer", opacity: saving ? 0.6 : 1 }}>
+                {saving ? "…" : "Ajouter"}
               </button>
             </form>
           </Section>
 
           {/* Habitudes */}
-          <Section title={`HABITUDES COMPLÉTÉES ${groupLabel}`} accentColor="#22C55E">
+          <Section title={`Habitudes complétées ${groupLabel}`} accentColor="#22C55E">
             {habitChartData.some(d => (d as Record<string, number>)["habitudes"] > 0) ? (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={habitChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
+                  <XAxis dataKey="date" tick={axisTick} interval={xInterval} />
+                  <YAxis allowDecimals={false} tick={axisTick} />
                   <Tooltip content={<CustomTooltip unit=" habitude(s)" />} />
                   <Bar dataKey="habitudes" fill="#22C55E" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -237,13 +236,13 @@ export default function HistoriquePage() {
           </Section>
 
           {/* Séances */}
-          <Section title={`SÉANCES EFFECTUÉES ${groupLabel}`} accentColor="#FF6500">
+          <Section title={`Séances effectuées ${groupLabel}`} accentColor="#FF6500">
             {sessionsChartData.some(d => (d as Record<string, number>)["séances"] > 0) ? (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={sessionsChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
+                  <XAxis dataKey="date" tick={axisTick} interval={xInterval} />
+                  <YAxis allowDecimals={false} tick={axisTick} />
                   <Tooltip content={<CustomTooltip unit=" séance(s)" />} />
                   <Bar dataKey="séances" fill="#FF6500" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -254,7 +253,7 @@ export default function HistoriquePage() {
           </Section>
 
           {/* Progression par exercice */}
-          <Section title="PROGRESSION PAR EXERCICE" accentColor="#F59E0B">
+          <Section title="Progression par exercice" accentColor="#F59E0B">
             {exerciseNames.length === 0 ? (
               <p style={{ fontSize: 13, color: "#6B7280" }}>
                 Valide des séances dans le Carnet pour suivre ta progression.
@@ -262,11 +261,11 @@ export default function HistoriquePage() {
             ) : (
               <>
                 <div style={{ marginBottom: 14 }}>
-                  <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 2, marginBottom: 8 }}>CHOISIR UN EXERCICE</p>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase", marginBottom: 8 }}>Choisir un exercice</p>
                   <select
                     value={selectedExercise}
                     onChange={e => setSelectedExercise(e.target.value)}
-                    style={{ width: "100%", border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 13, background: "#F9FAFB", color: "#111827", outline: "none", fontFamily: "inherit" }}
+                    style={{ width: "100%", border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 14, background: "#F9FAFB", color: "#111827", outline: "none", fontFamily: "inherit" }}
                   >
                     <option value="">-- Sélectionner --</option>
                     {exerciseNames.map(name => <option key={name} value={name}>{name}</option>)}
@@ -279,8 +278,8 @@ export default function HistoriquePage() {
                       kg: p.weightKg ?? 0,
                     }))}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-                      <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
-                      <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
+                      <XAxis dataKey="date" tick={axisTick} />
+                      <YAxis domain={["auto", "auto"]} tick={axisTick} />
                       <Tooltip content={<CustomTooltip unit=" kg" />} />
                       <Line type="monotone" dataKey="kg" stroke="#F59E0B" strokeWidth={2} dot={{ r: 4, fill: "#F59E0B" }} />
                     </LineChart>

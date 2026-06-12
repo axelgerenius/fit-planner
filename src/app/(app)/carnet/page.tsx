@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 type LogExercise = { id: string; name: string; sets?: number | null; reps?: string | null; weightKg?: number | null; restSec?: number | null };
 type WorkoutLog = {
   id: string;
@@ -73,18 +70,18 @@ export default function CarnetPage() {
     <div style={{ maxWidth: 600, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>CARNET</h1>
-        <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>
-          {total} SÉANCE{total !== 1 ? "S" : ""} ENREGISTRÉE{total !== 1 ? "S" : ""}
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 4, letterSpacing: 0.5 }}>Carnet</h1>
+        <p style={{ fontSize: 13, color: "#6B7280" }}>
+          {total} séance{total !== 1 ? "s" : ""} enregistrée{total !== 1 ? "s" : ""}
         </p>
       </div>
 
       {loading ? (
-        <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
+        <p style={{ fontSize: 13, color: "#6B7280" }}>Chargement…</p>
       ) : logs.length === 0 ? (
         <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: 48, textAlign: "center" }}>
           <p style={{ fontSize: 40, marginBottom: 12 }}>📖</p>
-          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>CARNET VIDE</p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#6B7280" }}>Carnet vide</p>
           <p style={{ fontSize: 13, color: "#6B7280", marginTop: 6 }}>
             Valide une séance dans Sport pour commencer ton carnet.
           </p>
@@ -93,7 +90,7 @@ export default function CarnetPage() {
         <>
           {grouped.map(({ month, entries }) => (
             <div key={month} style={{ marginBottom: 28 }}>
-              <p style={{ ...mono, fontSize: 10, letterSpacing: 2, color: "#6B7280", marginBottom: 10, textTransform: "uppercase" }}>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase", marginBottom: 10 }}>
                 {month}
               </p>
 
@@ -116,14 +113,14 @@ export default function CarnetPage() {
                       >
                         <span style={{ fontSize: 20, flexShrink: 0 }}>{icon}</span>
                         <div style={{ flex: 1, textAlign: "left" }}>
-                          <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{log.sessionName}</p>
-                          <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 1, marginTop: 2, textTransform: "capitalize" }}>
+                          <p style={{ fontWeight: 600, fontSize: 15, color: "#111827" }}>{log.sessionName}</p>
+                          <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2, textTransform: "capitalize" }}>
                             {fmtDate(log.date)}{log.durationMin ? ` · ${log.durationMin} min` : ""}
                           </p>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           {log.exercises.length > 0 && (
-                            <span style={{ ...mono, fontSize: 10, background: "#F3F4F6", color: "#6B7280", padding: "3px 8px", borderRadius: 6, letterSpacing: 1 }}>
+                            <span style={{ fontSize: 12, fontWeight: 600, background: "#F3F4F6", color: "#6B7280", padding: "3px 8px", borderRadius: 6 }}>
                               {log.exercises.length} exo{log.exercises.length > 1 ? "s" : ""}
                             </span>
                           )}
@@ -145,7 +142,7 @@ export default function CarnetPage() {
                                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#D1D5DB", display: "inline-block", flexShrink: 0 }} />
                                     <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{ex.name}</span>
                                   </div>
-                                  <span style={{ ...mono, fontSize: 11, color: "#6B7280" }}>
+                                  <span style={{ fontSize: 12, color: "#6B7280" }}>
                                     {[
                                       ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sér.` : ex.reps ?? null,
                                       ex.weightKg ? `${ex.weightKg}kg` : null,
@@ -173,9 +170,9 @@ export default function CarnetPage() {
           {logs.length < total && (
             <button
               onClick={() => loadLogs(logs.length)}
-              style={{ ...mono, fontSize: 10, letterSpacing: 1, padding: "14px 20px", borderRadius: 14, border: "1.5px solid #E5E7EB", background: "#fff", color: "#6B7280", cursor: "pointer", width: "100%", marginTop: 4 }}
+              style={{ fontSize: 13, fontWeight: 600, padding: "14px 20px", borderRadius: 14, border: "1.5px solid #E5E7EB", background: "#fff", color: "#6B7280", cursor: "pointer", width: "100%", marginTop: 4 }}
             >
-              CHARGER PLUS ({total - logs.length} restantes)
+              Charger plus ({total - logs.length} restantes)
             </button>
           )}
         </>

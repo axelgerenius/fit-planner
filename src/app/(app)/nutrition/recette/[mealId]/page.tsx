@@ -44,9 +44,6 @@ function generateSteps(mealName: string, ingredients: Ingredient[]): string[] {
   return steps;
 }
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 export default async function RecettePage({ params }: { params: Promise<{ mealId: string }> }) {
   const session = await auth();
   const userId = session!.user!.id!;
@@ -67,9 +64,9 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
       {/* Back */}
       <Link
         href="/nutrition"
-        style={{ ...mono, fontSize: 10, color: "#FF6500", textDecoration: "none", letterSpacing: 1, display: "inline-block", marginBottom: 16 }}
+        style={{ fontSize: 13, fontWeight: 600, color: "#FF6500", textDecoration: "none", display: "inline-block", marginBottom: 16 }}
       >
-        ← RETOUR AU MENU
+        ← Retour au menu
       </Link>
 
       {/* Hero header */}
@@ -80,11 +77,11 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
         padding: "20px 24px",
         marginBottom: 14,
       }}>
-        <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 2, marginBottom: 6 }}>
-          {MEAL_TYPE_LABELS[meal.type]?.toUpperCase()} — RECETTE
+        <p style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", letterSpacing: 1, marginBottom: 6, textTransform: "uppercase" }}>
+          {MEAL_TYPE_LABELS[meal.type]} — Recette
         </p>
-        <h1 style={{ ...display, fontSize: 28, letterSpacing: 2, color: "#fff", lineHeight: 1.1 }}>
-          {meal.name.toUpperCase()}
+        <h1 style={{ fontSize: 26, fontWeight: 800, color: "#fff", lineHeight: 1.2, letterSpacing: 0.5 }}>
+          {meal.name}
         </h1>
       </div>
 
@@ -101,8 +98,8 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
             boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
             border: accent ? `2px solid ${borderColor}` : "1px solid #E5E7EB",
           }}>
-            <p style={{ ...mono, fontSize: 13, fontWeight: 700, color: accent ? borderColor : "#111827" }}>{val}</p>
-            <p style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>{lbl}</p>
+            <p style={{ fontSize: 14, fontWeight: 800, color: accent ? borderColor : "#111827" }}>{val}</p>
+            <p style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{lbl}</p>
           </div>
         ))}
       </div>
@@ -110,7 +107,7 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
       {/* Ingrédients */}
       <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", marginBottom: 14, overflow: "hidden" }}>
         <div style={{ padding: "14px 20px", borderBottom: "1px solid #F3F4F6" }}>
-          <p style={{ ...mono, fontSize: 10, letterSpacing: 2, color: "#111827", fontWeight: 700 }}>INGRÉDIENTS</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase" }}>Ingrédients</p>
         </div>
         <div style={{ padding: "0 20px" }}>
           {meal.ingredients.map((ing, idx) => (
@@ -121,9 +118,9 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 16 }}>{CATEGORY_ICONS[ing.category] ?? "•"}</span>
-                <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{ing.name}</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: "#111827" }}>{ing.name}</span>
               </div>
-              <span style={{ ...mono, fontSize: 11, color: "#6B7280" }}>{ing.quantity} {ing.unit}</span>
+              <span style={{ fontSize: 13, color: "#6B7280" }}>{ing.quantity} {ing.unit}</span>
             </div>
           ))}
         </div>
@@ -132,7 +129,7 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
       {/* Préparation */}
       <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", marginBottom: 14, overflow: "hidden" }}>
         <div style={{ padding: "14px 20px", borderBottom: "1px solid #F3F4F6" }}>
-          <p style={{ ...mono, fontSize: 10, letterSpacing: 2, color: "#111827", fontWeight: 700 }}>PRÉPARATION</p>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: "#6B7280", textTransform: "uppercase" }}>Préparation</p>
         </div>
         <div style={{ padding: "8px 20px" }}>
           {steps.map((step, idx) => (
@@ -141,22 +138,22 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
               borderBottom: idx < steps.length - 1 ? "1px solid #F3F4F6" : "none",
             }}>
               <span style={{
-                ...mono, fontSize: 11, fontWeight: 700, color: "#fff",
+                fontSize: 12, fontWeight: 800, color: "#fff",
                 background: borderColor, width: 24, height: 24, borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 {idx + 1}
               </span>
-              <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.65 }}>{step}</p>
+              <p style={{ fontSize: 14, color: "#111827", lineHeight: 1.65 }}>{step}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Conseil */}
-      <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "14px 20px", marginBottom: 14, borderTop: `3px solid #F59E0B` }}>
-        <p style={{ ...mono, fontSize: 9, color: "#D97706", fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>💡 CONSEIL NUTRITION</p>
-        <p style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.65 }}>
+      <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "14px 20px", marginBottom: 14, borderTop: "3px solid #F59E0B" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#D97706", letterSpacing: 1, marginBottom: 6 }}>💡 Conseil nutrition</p>
+        <p style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.65 }}>
           Préparez vos ingrédients à l&apos;avance (meal prep du dimanche) pour gagner du temps en semaine et respecter plus facilement vos apports nutritionnels.
         </p>
       </div>
@@ -178,8 +175,8 @@ export default async function RecettePage({ params }: { params: Promise<{ mealId
             👨‍🍳
           </div>
           <div>
-            <p style={{ ...mono, fontSize: 10, color: "#111827", letterSpacing: 1, fontWeight: 700 }}>VOIR SUR MARMITON</p>
-            <p style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#111827" }}>Voir sur Marmiton</p>
+            <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
               Variantes pour &laquo;&nbsp;{meal.name}&nbsp;&raquo;
             </p>
           </div>

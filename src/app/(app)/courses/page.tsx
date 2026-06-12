@@ -3,9 +3,6 @@ import { prisma } from "@/lib/prisma";
 import GenerateShoppingListButton from "@/components/generate-shopping-list-button";
 import ShoppingListManager from "@/components/shopping-list-manager";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 export default async function CoursesPage() {
   const session = await auth();
   const userId = session!.user!.id!;
@@ -24,9 +21,9 @@ export default async function CoursesPage() {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>COURSES</h1>
-          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>
-            SEMAINE DU {weekLabel.toUpperCase()}
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", marginBottom: 4, letterSpacing: 0.5 }}>Courses</h1>
+          <p style={{ fontSize: 13, color: "#6B7280" }}>
+            Semaine du {weekLabel}
           </p>
         </div>
         <GenerateShoppingListButton />
@@ -41,7 +38,7 @@ export default async function CoursesPage() {
           border: "1px solid #E5E7EB",
         }}>
           <p style={{ fontSize: 40, marginBottom: 12 }}>🛒</p>
-          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1, marginBottom: 6 }}>AUCUNE LISTE POUR CETTE SEMAINE</p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "#6B7280", marginBottom: 6 }}>Aucune liste pour cette semaine</p>
           <p style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.6 }}>
             Appuie sur &quot;Générer la liste&quot; pour créer ta liste de courses à partir des menus de la semaine.
           </p>

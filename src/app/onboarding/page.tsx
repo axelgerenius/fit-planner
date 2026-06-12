@@ -44,9 +44,6 @@ type FormData = {
   sessionsPerWeek: string; diet: string; allergies: string[];
 };
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 const inputStyle: React.CSSProperties = {
   width: "100%", border: "1px solid #E5E7EB", borderRadius: 10,
   padding: "11px 14px", background: "#F9FAFB", color: "#111827",
@@ -74,12 +71,12 @@ function allergyStyle(selected: boolean): React.CSSProperties {
 }
 
 const btnPrimary: React.CSSProperties = {
-  ...mono, fontSize: 11, letterSpacing: 1, fontWeight: 600,
+  fontSize: 14, fontWeight: 700,
   background: "#FF6500", color: "#fff", padding: "13px",
   borderRadius: 12, border: "none", cursor: "pointer",
 };
 const btnBack: React.CSSProperties = {
-  ...mono, fontSize: 11, letterSpacing: 1,
+  fontSize: 14, fontWeight: 600,
   background: "#F3F4F6", color: "#6B7280", padding: "13px",
   borderRadius: 12, border: "none", cursor: "pointer",
 };
@@ -139,7 +136,7 @@ export default function OnboardingPage() {
 
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ ...display, fontSize: 38, letterSpacing: 4, lineHeight: 1, color: "#111827" }}>
+          <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1, color: "#111827", letterSpacing: 0.5 }}>
             VITA<span style={{ color: "#FF6500" }}>LOOP</span>
           </h1>
         </div>
@@ -147,10 +144,10 @@ export default function OnboardingPage() {
         {/* Progress */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-            <span style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>
-              ÉTAPE {step} / {totalSteps}
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#6B7280" }}>
+              Étape {step} / {totalSteps}
             </span>
-            <span style={{ ...mono, fontSize: 10, color: "#FF6500", fontWeight: 700 }}>{pct}%</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: "#FF6500" }}>{pct}%</span>
           </div>
           <div style={{ height: 5, background: "#E5E7EB", borderRadius: 99 }}>
             <div style={{ height: "100%", background: "#FF6500", width: `${pct}%`, borderRadius: 99, transition: "width 0.3s" }} />
@@ -164,8 +161,8 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div>
               <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
-                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>VOTRE OBJECTIF</h2>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>Votre objectif</h2>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>
                   Votre programme sera entièrement adapté à votre but.
                 </p>
               </div>
@@ -178,8 +175,8 @@ export default function OnboardingPage() {
                   >
                     <span style={{ fontSize: 22 }}>{g.icon}</span>
                     <div>
-                      <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{g.label}</p>
-                      <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{g.desc}</p>
+                      <p style={{ fontWeight: 600, fontSize: 15, color: "#111827" }}>{g.label}</p>
+                      <p style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{g.desc}</p>
                     </div>
                     {form.goal === g.value && (
                       <span style={{ marginLeft: "auto", color: "#FF6500", fontSize: 16, flexShrink: 0 }}>✓</span>
@@ -191,7 +188,7 @@ export default function OnboardingPage() {
                   onClick={() => setStep(2)}
                   style={{ ...btnPrimary, marginTop: 8, opacity: form.goal ? 1 : 0.4 }}
                 >
-                  CONTINUER →
+                  Continuer →
                 </button>
               </div>
             </div>
@@ -201,8 +198,8 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div>
               <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
-                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>NIVEAU SPORTIF</h2>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>Niveau sportif</h2>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>
                   Pour adapter l&apos;intensité des séances.
                 </p>
               </div>
@@ -213,15 +210,15 @@ export default function OnboardingPage() {
                     onClick={() => setForm((f) => ({ ...f, level: l.value }))}
                     style={{ ...optionStyle(form.level === l.value), display: "flex", flexDirection: "column", padding: "13px 16px", width: "100%", textAlign: "left" }}
                   >
-                    <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{l.label}</p>
-                    <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{l.desc}</p>
+                    <p style={{ fontWeight: 600, fontSize: 15, color: "#111827" }}>{l.label}</p>
+                    <p style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{l.desc}</p>
                   </button>
                 ))}
 
                 {form.level && (
                   <div style={{ marginTop: 4 }}>
-                    <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
-                      SÉANCES PAR SEMAINE
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>
+                      Séances par semaine
                     </p>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
                       {["2", "3", "4", "5"].map((n) => (
@@ -230,7 +227,7 @@ export default function OnboardingPage() {
                           onClick={() => setForm((f) => ({ ...f, sessionsPerWeek: n }))}
                           style={{
                             ...optionStyle(form.sessionsPerWeek === n),
-                            ...mono, fontSize: 18, fontWeight: 700,
+                            fontSize: 20, fontWeight: 800,
                             padding: "13px 8px",
                             color: form.sessionsPerWeek === n ? "#FF6500" : "#111827",
                           }}
@@ -243,13 +240,13 @@ export default function OnboardingPage() {
                 )}
 
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  <button onClick={() => setStep(1)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
+                  <button onClick={() => setStep(1)} style={{ ...btnBack, flex: 1 }}>← Retour</button>
                   <button
                     disabled={!form.level || !form.sessionsPerWeek}
                     onClick={() => setStep(3)}
                     style={{ ...btnPrimary, flex: 1, opacity: form.level && form.sessionsPerWeek ? 1 : 0.4 }}
                   >
-                    CONTINUER →
+                    Continuer →
                   </button>
                 </div>
               </div>
@@ -260,8 +257,8 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div>
               <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
-                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>MATÉRIEL DISPONIBLE</h2>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>Matériel disponible</h2>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>
                   Sélectionnez tout ce qui s&apos;applique.
                 </p>
               </div>
@@ -274,18 +271,18 @@ export default function OnboardingPage() {
                       style={{ ...optionStyle(form.equipment.includes(eq.value)), display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "18px 8px" }}
                     >
                       <span style={{ fontSize: 26 }}>{eq.icon}</span>
-                      <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{eq.label}</span>
+                      <span style={{ fontSize: 14, fontWeight: 500, color: "#111827" }}>{eq.label}</span>
                     </button>
                   ))}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => setStep(2)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
+                  <button onClick={() => setStep(2)} style={{ ...btnBack, flex: 1 }}>← Retour</button>
                   <button
                     disabled={form.equipment.length === 0}
                     onClick={() => setStep(4)}
                     style={{ ...btnPrimary, flex: 1, opacity: form.equipment.length > 0 ? 1 : 0.4 }}
                   >
-                    CONTINUER →
+                    Continuer →
                   </button>
                 </div>
               </div>
@@ -296,21 +293,21 @@ export default function OnboardingPage() {
           {step === 4 && (
             <div>
               <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
-                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>DONNÉES PHYSIQUES</h2>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>Données physiques</h2>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>
                   Utilisées pour calculer vos besoins caloriques.
                 </p>
               </div>
               <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
                 {/* Sexe */}
                 <div>
-                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>SEXE</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>Sexe</p>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     {[{ value: "MALE", label: "Homme" }, { value: "FEMALE", label: "Femme" }].map((s) => (
                       <button
                         key={s.value}
                         onClick={() => setForm((f) => ({ ...f, sex: s.value }))}
-                        style={{ ...optionStyle(form.sex === s.value), padding: "11px", fontWeight: 600, fontSize: 14, color: form.sex === s.value ? "#FF6500" : "#111827" }}
+                        style={{ ...optionStyle(form.sex === s.value), padding: "11px", fontWeight: 600, fontSize: 15, color: form.sex === s.value ? "#FF6500" : "#111827" }}
                       >
                         {s.label}
                       </button>
@@ -321,12 +318,12 @@ export default function OnboardingPage() {
                 {/* Âge / Poids / Taille */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
                   {[
-                    { key: "age", label: "ÂGE", placeholder: "25", min: 10, max: 100 },
-                    { key: "weight", label: "POIDS (kg)", placeholder: "70", min: 30, max: 300 },
-                    { key: "height", label: "TAILLE (cm)", placeholder: "175", min: 100, max: 250 },
+                    { key: "age", label: "Âge", placeholder: "25", min: 10, max: 100 },
+                    { key: "weight", label: "Poids (kg)", placeholder: "70", min: 30, max: 300 },
+                    { key: "height", label: "Taille (cm)", placeholder: "175", min: 100, max: 250 },
                   ].map((field) => (
                     <div key={field.key}>
-                      <p style={{ ...mono, fontSize: 9, color: "#6B7280", marginBottom: 6, letterSpacing: 1 }}>
+                      <p style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 6 }}>
                         {field.label}
                       </p>
                       <input
@@ -343,19 +340,19 @@ export default function OnboardingPage() {
                 </div>
 
                 {error && (
-                  <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+                  <p style={{ fontSize: 13, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
                     {error}
                   </p>
                 )}
 
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => setStep(3)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
+                  <button onClick={() => setStep(3)} style={{ ...btnBack, flex: 1 }}>← Retour</button>
                   <button
                     disabled={!form.sex || !form.age || !form.weight || !form.height}
                     onClick={() => setStep(5)}
                     style={{ ...btnPrimary, flex: 1, opacity: form.sex && form.age && form.weight && form.height ? 1 : 0.4 }}
                   >
-                    CONTINUER →
+                    Continuer →
                   </button>
                 </div>
               </div>
@@ -366,8 +363,8 @@ export default function OnboardingPage() {
           {step === 5 && (
             <div>
               <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
-                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>ALIMENTATION</h2>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: "#111827" }}>Alimentation</h2>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>
                   Pour adapter vos menus à vos préférences et contraintes.
                 </p>
               </div>
@@ -375,8 +372,8 @@ export default function OnboardingPage() {
 
                 {/* Régime */}
                 <div>
-                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
-                    RÉGIME ALIMENTAIRE
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>
+                    Régime alimentaire
                   </p>
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {DIETS.map((d) => (
@@ -387,8 +384,8 @@ export default function OnboardingPage() {
                       >
                         <span style={{ fontSize: 20 }}>{d.icon}</span>
                         <div style={{ flex: 1 }}>
-                          <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{d.label}</p>
-                          <p style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{d.desc}</p>
+                          <p style={{ fontWeight: 600, fontSize: 15, color: "#111827" }}>{d.label}</p>
+                          <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{d.desc}</p>
                         </div>
                         {form.diet === d.value && (
                           <span style={{ color: "#FF6500", fontSize: 16, flexShrink: 0 }}>✓</span>
@@ -400,9 +397,9 @@ export default function OnboardingPage() {
 
                 {/* Allergies */}
                 <div>
-                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
-                    ALLERGIES / INTOLÉRANCES{" "}
-                    <span style={{ color: "#D1D5DB" }}>(optionnel)</span>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>
+                    Allergies / intolérances{" "}
+                    <span style={{ color: "#D1D5DB", fontWeight: 400 }}>(optionnel)</span>
                   </p>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8 }}>
                     {ALLERGIES.map((a) => (
@@ -412,11 +409,11 @@ export default function OnboardingPage() {
                         style={{ ...allergyStyle(form.allergies.includes(a.value)), display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", textAlign: "left" }}
                       >
                         <span style={{ fontSize: 18 }}>{a.icon}</span>
-                        <span style={{ fontSize: 13, fontWeight: form.allergies.includes(a.value) ? 600 : 400, color: "#111827" }}>
+                        <span style={{ fontSize: 14, fontWeight: form.allergies.includes(a.value) ? 600 : 400, color: "#111827" }}>
                           {a.label}
                         </span>
                         {form.allergies.includes(a.value) && (
-                          <span style={{ marginLeft: "auto", color: "#22C55E", fontSize: 12, flexShrink: 0 }}>✓</span>
+                          <span style={{ marginLeft: "auto", color: "#22C55E", fontSize: 14, flexShrink: 0 }}>✓</span>
                         )}
                       </button>
                     ))}
@@ -424,19 +421,19 @@ export default function OnboardingPage() {
                 </div>
 
                 {error && (
-                  <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+                  <p style={{ fontSize: 13, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
                     {error}
                   </p>
                 )}
 
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => setStep(4)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
+                  <button onClick={() => setStep(4)} style={{ ...btnBack, flex: 1 }}>← Retour</button>
                   <button
                     disabled={loading}
                     onClick={handleSubmit}
                     style={{ ...btnPrimary, flex: 1, opacity: loading ? 0.7 : 1 }}
                   >
-                    {loading ? "GÉNÉRATION…" : "🚀 CRÉER MON PROGRAMME"}
+                    {loading ? "Génération…" : "🚀 Créer mon programme"}
                   </button>
                 </div>
               </div>

@@ -3,9 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
-const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
-
 const DAY_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 const MEAL_CONFIG: Record<string, { label: string; icon: string; borderColor: string }> = {
@@ -33,9 +30,9 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
     <div style={{ paddingBottom: 32 }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <h1 style={{ ...display, fontSize: 26, letterSpacing: 2, color: "#111827" }}>NUTRITION</h1>
-        <span style={{ ...mono, fontSize: 10, background: "#111827", color: "#fff", padding: "4px 12px", borderRadius: 8 }}>
-          ~{Math.round(targetCalories)} KCAL
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#111827", letterSpacing: 0.5 }}>Nutrition</h1>
+        <span style={{ fontSize: 12, fontWeight: 700, background: "#111827", color: "#fff", padding: "5px 12px", borderRadius: 8 }}>
+          ~{Math.round(targetCalories)} kcal
         </span>
       </div>
 
@@ -49,14 +46,13 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
               key={m.id}
               onClick={() => setActiveDay(m.dayOfWeek)}
               style={{
-                ...mono,
-                fontSize: 11,
+                fontSize: 13,
+                fontWeight: isToday || isActive ? 700 : 500,
                 padding: "8px 14px",
                 borderRadius: 20,
                 border: "none",
                 background: isActive ? "#FF6500" : "#fff",
                 color: isActive ? "#fff" : isToday ? "#FF6500" : "#6B7280",
-                fontWeight: isToday || isActive ? 700 : 400,
                 cursor: "pointer",
                 flexShrink: 0,
                 boxShadow: isActive ? "0 2px 8px rgba(255,101,0,0.25)" : "0 1px 3px rgba(0,0,0,0.06)",
@@ -90,8 +86,8 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
                 boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                 border: accent ? "2px solid #FF6500" : "1px solid #E5E7EB",
               }}>
-                <p style={{ ...mono, fontSize: 13, fontWeight: 700, color: accent ? "#FF6500" : "#111827" }}>{val}</p>
-                <p style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>{lbl}</p>
+                <p style={{ fontSize: 15, fontWeight: 800, color: accent ? "#FF6500" : "#111827" }}>{val}</p>
+                <p style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{lbl}</p>
               </div>
             ))}
           </div>
@@ -117,24 +113,25 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
                     {cfg.icon}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 1, marginBottom: 2 }}>
-                      {cfg.label.toUpperCase()}
+                    <p style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", letterSpacing: 0.5, marginBottom: 2 }}>
+                      {cfg.label}
                     </p>
-                    <p style={{ fontWeight: 600, fontSize: 14, color: "#111827", lineHeight: 1.2 }}>{meal.name}</p>
+                    <p style={{ fontWeight: 600, fontSize: 15, color: "#111827", lineHeight: 1.2 }}>{meal.name}</p>
                   </div>
                   <Link
                     href={`/nutrition/recette/${meal.id}`}
                     style={{
-                      ...mono, fontSize: 10, padding: "6px 12px",
+                      fontSize: 12, fontWeight: 700,
+                      padding: "6px 12px",
                       borderRadius: 8, background: "#111827", color: "#fff",
-                      textDecoration: "none", flexShrink: 0, letterSpacing: "0.5px",
+                      textDecoration: "none", flexShrink: 0,
                     }}
                   >
-                    RECETTE →
+                    Recette →
                   </Link>
                 </div>
 
-                <p style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.6, marginBottom: 10 }}>
+                <p style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.6, marginBottom: 10 }}>
                   {meal.ingredients.map(ing => `${ing.name} ${ing.quantity}${ing.unit}`).join(" · ")}
                 </p>
 
@@ -145,7 +142,7 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
                     { lbl: `G ${Math.round(meal.carbs)}g`, color: "#6B7280", bg: "#F3F4F6" },
                     { lbl: `L ${Math.round(meal.fat)}g`, color: "#6B7280", bg: "#F3F4F6" },
                   ].map(({ lbl, color, bg }) => (
-                    <span key={lbl} style={{ ...mono, fontSize: 10, padding: "3px 8px", borderRadius: 6, background: bg, color }}>
+                    <span key={lbl} style={{ fontSize: 12, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: bg, color }}>
                       {lbl}
                     </span>
                   ))}
@@ -166,8 +163,8 @@ export default function NutritionClient({ targetCalories, todayIndex, weekMenus 
                 🛒
               </div>
               <div>
-                <p style={{ ...mono, fontSize: 11, fontWeight: 700, letterSpacing: 1, color: "#111827" }}>LISTE DE COURSES</p>
-                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>Générer la liste pour cette semaine</p>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>Liste de courses</p>
+                <p style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>Générer la liste pour cette semaine</p>
               </div>
             </div>
             <span style={{ color: "#FF6500", fontSize: 18 }}>→</span>
