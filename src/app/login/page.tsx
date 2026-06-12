@@ -8,6 +8,12 @@ import Link from "next/link";
 const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
 const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
 
+const inputStyle: React.CSSProperties = {
+  width: "100%", border: "1px solid #E5E7EB", borderRadius: 10,
+  padding: "11px 14px", background: "#F9FAFB", color: "#111827",
+  fontSize: 15, outline: "none", boxSizing: "border-box",
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -35,25 +41,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f0e8" }}>
-      <div className="w-full" style={{ maxWidth: "400px" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "#F9FAFB" }}>
+      <div style={{ width: "100%", maxWidth: 400 }}>
         {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 style={{ ...display, fontSize: "42px", letterSpacing: "4px", color: "#1a1a1a", lineHeight: 1 }}>
-            VITA<span style={{ color: "#c0392b" }}>LOOP</span>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <h1 style={{ ...display, fontSize: 44, letterSpacing: 4, lineHeight: 1, color: "#111827" }}>
+            VITA<span style={{ color: "#FF6500" }}>LOOP</span>
           </h1>
-          <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginTop: "6px", letterSpacing: "2px" }}>
+          <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginTop: 6, letterSpacing: 2 }}>
             SPORT & NUTRITION PERSONNALISÉS
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded p-6" style={{ background: "#fff", border: "1px solid #d8d0c4" }}>
-          <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px", marginBottom: "20px" }}>CONNEXION</h2>
+        <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", padding: "28px 28px 24px" }}>
+          <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827", marginBottom: 22 }}>CONNEXION</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <label style={{ ...mono, fontSize: "10px", color: "#7a7268", display: "block", marginBottom: "6px", letterSpacing: "1px" }}>
+              <label style={{ ...mono, fontSize: 10, color: "#6B7280", display: "block", marginBottom: 6, letterSpacing: 1 }}>
                 EMAIL
               </label>
               <input
@@ -63,12 +69,11 @@ export default function LoginPage() {
                 placeholder="vous@exemple.com"
                 autoComplete="email"
                 autoCapitalize="none"
-                className="w-full outline-none transition-colors"
-                style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a" }}
+                style={inputStyle}
               />
             </div>
             <div>
-              <label style={{ ...mono, fontSize: "10px", color: "#7a7268", display: "block", marginBottom: "6px", letterSpacing: "1px" }}>
+              <label style={{ ...mono, fontSize: 10, color: "#6B7280", display: "block", marginBottom: 6, letterSpacing: 1 }}>
                 MOT DE PASSE
               </label>
               <input
@@ -77,29 +82,40 @@ export default function LoginPage() {
                 required
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="w-full outline-none"
-                style={{ border: "1px solid #d8d0c4", borderRadius: "3px", padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a" }}
+                style={inputStyle}
               />
             </div>
-            {error && <p style={{ ...mono, fontSize: "11px", color: "#c0392b" }}>{error}</p>}
+
+            {error && (
+              <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+                {error}
+              </p>
+            )}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full font-semibold transition-opacity hover:opacity-80 disabled:opacity-50"
-              style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+              style={{
+                ...mono, fontSize: 11, letterSpacing: 1,
+                background: "#FF6500", color: "#fff",
+                padding: "13px", borderRadius: 12, border: "none",
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.7 : 1,
+                fontWeight: 600, marginTop: 4,
+              }}
             >
               {loading ? "CONNEXION…" : "SE CONNECTER"}
             </button>
           </form>
 
-          <p className="mt-4 text-center" style={{ fontSize: "13px", color: "#7a7268" }}>
-            <Link href="/forgot-password" style={{ color: "#7a7268", textDecoration: "none" }}>
+          <p style={{ textAlign: "center", fontSize: 13, color: "#6B7280", marginTop: 16 }}>
+            <Link href="/forgot-password" style={{ color: "#6B7280", textDecoration: "none" }}>
               Mot de passe oublié ?
             </Link>
           </p>
-          <p className="mt-3 text-center" style={{ fontSize: "13px", color: "#7a7268" }}>
+          <p style={{ textAlign: "center", fontSize: 13, color: "#6B7280", marginTop: 10 }}>
             Pas encore de compte ?{" "}
-            <Link href="/register" style={{ color: "#c0392b", fontWeight: 600, textDecoration: "none" }}>
+            <Link href="/register" style={{ color: "#FF6500", fontWeight: 600, textDecoration: "none" }}>
               S&apos;inscrire
             </Link>
           </p>

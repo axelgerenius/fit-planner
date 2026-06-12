@@ -24,18 +24,18 @@ const EQUIPMENTS = [
 ];
 
 const DIETS = [
-  { value: "OMNIVORE",    label: "Omnivore",    icon: "🍗", desc: "Je mange de tout" },
-  { value: "VEGETARIAN",  label: "Végétarien",  icon: "🥚", desc: "Pas de viande ni poisson, mais œufs et produits laitiers" },
-  { value: "VEGAN",       label: "Vegan",       icon: "🌱", desc: "Aucun produit d'origine animale" },
+  { value: "OMNIVORE",   label: "Omnivore",   icon: "🍗", desc: "Je mange de tout" },
+  { value: "VEGETARIAN", label: "Végétarien", icon: "🥚", desc: "Pas de viande ni poisson, mais œufs et produits laitiers" },
+  { value: "VEGAN",      label: "Vegan",      icon: "🌱", desc: "Aucun produit d'origine animale" },
 ];
 
 const ALLERGIES = [
-  { value: "GLUTEN",    label: "Gluten",          icon: "🌾" },
-  { value: "LACTOSE",   label: "Lactose",         icon: "🥛" },
-  { value: "NUTS",      label: "Fruits à coque",  icon: "🥜" },
-  { value: "EGGS",      label: "Œufs",            icon: "🥚" },
-  { value: "SOY",       label: "Soja",            icon: "🫘" },
-  { value: "SHELLFISH", label: "Crustacés",       icon: "🦐" },
+  { value: "GLUTEN",    label: "Gluten",         icon: "🌾" },
+  { value: "LACTOSE",   label: "Lactose",        icon: "🥛" },
+  { value: "NUTS",      label: "Fruits à coque", icon: "🥜" },
+  { value: "EGGS",      label: "Œufs",           icon: "🥚" },
+  { value: "SOY",       label: "Soja",           icon: "🫘" },
+  { value: "SHELLFISH", label: "Crustacés",      icon: "🦐" },
 ];
 
 type FormData = {
@@ -48,9 +48,40 @@ const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space 
 const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", border: "1px solid #d8d0c4", borderRadius: "3px",
-  padding: "10px 12px", background: "#f5f0e8", color: "#1a1a1a",
-  fontSize: "14px", outline: "none",
+  width: "100%", border: "1px solid #E5E7EB", borderRadius: 10,
+  padding: "11px 14px", background: "#F9FAFB", color: "#111827",
+  fontSize: 14, outline: "none", boxSizing: "border-box",
+};
+
+function optionStyle(selected: boolean): React.CSSProperties {
+  return {
+    border: selected ? "2px solid #FF6500" : "1px solid #E5E7EB",
+    background: selected ? "#FFF3ED" : "#fff",
+    borderRadius: 12,
+    transition: "all 0.15s",
+    cursor: "pointer",
+  };
+}
+
+function allergyStyle(selected: boolean): React.CSSProperties {
+  return {
+    border: selected ? "2px solid #22C55E" : "1px solid #E5E7EB",
+    background: selected ? "#F0FDF4" : "#fff",
+    borderRadius: 12,
+    transition: "all 0.15s",
+    cursor: "pointer",
+  };
+}
+
+const btnPrimary: React.CSSProperties = {
+  ...mono, fontSize: 11, letterSpacing: 1, fontWeight: 600,
+  background: "#FF6500", color: "#fff", padding: "13px",
+  borderRadius: 12, border: "none", cursor: "pointer",
+};
+const btnBack: React.CSSProperties = {
+  ...mono, fontSize: 11, letterSpacing: 1,
+  background: "#F3F4F6", color: "#6B7280", padding: "13px",
+  borderRadius: 12, border: "none", cursor: "pointer",
 };
 
 export default function OnboardingPage() {
@@ -103,65 +134,62 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f0e8" }}>
-      <div className="w-full" style={{ maxWidth: "480px" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "#F9FAFB" }}>
+      <div style={{ width: "100%", maxWidth: 480 }}>
 
         {/* Logo */}
-        <div className="text-center mb-6">
-          <h1 style={{ ...display, fontSize: "36px", letterSpacing: "4px", color: "#1a1a1a", lineHeight: 1 }}>
-            VITA<span style={{ color: "#c0392b" }}>LOOP</span>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <h1 style={{ ...display, fontSize: 38, letterSpacing: 4, lineHeight: 1, color: "#111827" }}>
+            VITA<span style={{ color: "#FF6500" }}>LOOP</span>
           </h1>
         </div>
 
         {/* Progress */}
-        <div className="mb-4">
-          <div className="flex justify-between mb-1.5">
-            <span style={{ ...mono, fontSize: "10px", color: "#7a7268", letterSpacing: "1px" }}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+            <span style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>
               ÉTAPE {step} / {totalSteps}
             </span>
-            <span style={{ ...mono, fontSize: "10px", color: "#c0392b", fontWeight: 700 }}>{pct}%</span>
+            <span style={{ ...mono, fontSize: 10, color: "#FF6500", fontWeight: 700 }}>{pct}%</span>
           </div>
-          <div style={{ height: "4px", background: "#d8d0c4" }}>
-            <div style={{ height: "100%", background: "#c0392b", width: `${pct}%`, transition: "width 0.3s" }} />
+          <div style={{ height: 5, background: "#E5E7EB", borderRadius: 99 }}>
+            <div style={{ height: "100%", background: "#FF6500", width: `${pct}%`, borderRadius: 99, transition: "width 0.3s" }} />
           </div>
         </div>
 
         {/* Card */}
-        <div className="rounded" style={{ background: "#fff", border: "1px solid #d8d0c4" }}>
+        <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", overflow: "hidden" }}>
 
           {/* Step 1 — Objectif */}
           {step === 1 && (
             <div>
-              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
-                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>VOTRE OBJECTIF</h2>
-                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+              <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>VOTRE OBJECTIF</h2>
+                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
                   Votre programme sera entièrement adapté à votre but.
                 </p>
               </div>
-              <div className="p-4 space-y-2">
+              <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                 {GOALS.map((g) => (
                   <button
                     key={g.value}
                     onClick={() => setForm((f) => ({ ...f, goal: g.value }))}
-                    className="w-full flex items-center gap-4 text-left transition-all hover:opacity-90"
-                    style={{
-                      padding: "12px 14px", borderRadius: "3px",
-                      border: form.goal === g.value ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                      background: form.goal === g.value ? "#fff5f5" : "#f5f0e8",
-                    }}
+                    style={{ ...optionStyle(form.goal === g.value), display: "flex", alignItems: "center", gap: 14, padding: "13px 16px", width: "100%", textAlign: "left" }}
                   >
-                    <span style={{ fontSize: "22px" }}>{g.icon}</span>
+                    <span style={{ fontSize: 22 }}>{g.icon}</span>
                     <div>
-                      <p style={{ fontWeight: 600, fontSize: "14px" }}>{g.label}</p>
-                      <p style={{ fontSize: "12px", color: "#7a7268" }}>{g.desc}</p>
+                      <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{g.label}</p>
+                      <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{g.desc}</p>
                     </div>
+                    {form.goal === g.value && (
+                      <span style={{ marginLeft: "auto", color: "#FF6500", fontSize: 16, flexShrink: 0 }}>✓</span>
+                    )}
                   </button>
                 ))}
                 <button
                   disabled={!form.goal}
                   onClick={() => setStep(2)}
-                  className="w-full mt-2 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                  style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                  style={{ ...btnPrimary, marginTop: 8, opacity: form.goal ? 1 : 0.4 }}
                 >
                   CONTINUER →
                 </button>
@@ -172,46 +200,39 @@ export default function OnboardingPage() {
           {/* Step 2 — Niveau */}
           {step === 2 && (
             <div>
-              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
-                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>NIVEAU SPORTIF</h2>
-                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+              <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>NIVEAU SPORTIF</h2>
+                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
                   Pour adapter l&apos;intensité des séances.
                 </p>
               </div>
-              <div className="p-4 space-y-2">
+              <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
                 {LEVELS.map((l) => (
                   <button
                     key={l.value}
                     onClick={() => setForm((f) => ({ ...f, level: l.value }))}
-                    className="w-full flex flex-col text-left transition-all hover:opacity-90"
-                    style={{
-                      padding: "12px 14px", borderRadius: "3px",
-                      border: form.level === l.value ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                      background: form.level === l.value ? "#fff5f5" : "#f5f0e8",
-                    }}
+                    style={{ ...optionStyle(form.level === l.value), display: "flex", flexDirection: "column", padding: "13px 16px", width: "100%", textAlign: "left" }}
                   >
-                    <p style={{ fontWeight: 600, fontSize: "14px" }}>{l.label}</p>
-                    <p style={{ fontSize: "12px", color: "#7a7268" }}>{l.desc}</p>
+                    <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{l.label}</p>
+                    <p style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{l.desc}</p>
                   </button>
                 ))}
-                {/* Séances par semaine */}
+
                 {form.level && (
-                  <div>
-                    <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>
+                  <div style={{ marginTop: 4 }}>
+                    <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
                       SÉANCES PAR SEMAINE
                     </p>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
                       {["2", "3", "4", "5"].map((n) => (
                         <button
                           key={n}
                           onClick={() => setForm((f) => ({ ...f, sessionsPerWeek: n }))}
-                          className="transition-all hover:opacity-90"
                           style={{
-                            padding: "12px 8px", borderRadius: "3px", fontWeight: 700,
-                            ...mono, fontSize: "16px",
-                            border: form.sessionsPerWeek === n ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                            background: form.sessionsPerWeek === n ? "#fff5f5" : "#f5f0e8",
-                            color: form.sessionsPerWeek === n ? "#c0392b" : "#1a1a1a",
+                            ...optionStyle(form.sessionsPerWeek === n),
+                            ...mono, fontSize: 18, fontWeight: 700,
+                            padding: "13px 8px",
+                            color: form.sessionsPerWeek === n ? "#FF6500" : "#111827",
                           }}
                         >
                           {n}
@@ -221,19 +242,12 @@ export default function OnboardingPage() {
                   </div>
                 )}
 
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => setStep(1)}
-                    className="flex-1 transition-opacity hover:opacity-80"
-                    style={{ ...mono, fontSize: "11px", background: "#f5f0e8", color: "#1a1a1a", padding: "12px", borderRadius: "3px", border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: "1px" }}
-                  >
-                    ← RETOUR
-                  </button>
+                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                  <button onClick={() => setStep(1)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
                   <button
                     disabled={!form.level || !form.sessionsPerWeek}
                     onClick={() => setStep(3)}
-                    className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                    style={{ ...btnPrimary, flex: 1, opacity: form.level && form.sessionsPerWeek ? 1 : 0.4 }}
                   >
                     CONTINUER →
                   </button>
@@ -245,43 +259,31 @@ export default function OnboardingPage() {
           {/* Step 3 — Matériel */}
           {step === 3 && (
             <div>
-              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
-                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>MATÉRIEL DISPONIBLE</h2>
-                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+              <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>MATÉRIEL DISPONIBLE</h2>
+                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
                   Sélectionnez tout ce qui s&apos;applique.
                 </p>
               </div>
-              <div className="p-4">
-                <div className="grid grid-cols-2 gap-2 mb-4">
+              <div style={{ padding: 16 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8, marginBottom: 16 }}>
                   {EQUIPMENTS.map((eq) => (
                     <button
                       key={eq.value}
                       onClick={() => toggleEquipment(eq.value)}
-                      className="flex flex-col items-center gap-2 transition-all hover:opacity-90"
-                      style={{
-                        padding: "16px 8px", borderRadius: "3px",
-                        border: form.equipment.includes(eq.value) ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                        background: form.equipment.includes(eq.value) ? "#fff5f5" : "#f5f0e8",
-                      }}
+                      style={{ ...optionStyle(form.equipment.includes(eq.value)), display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "18px 8px" }}
                     >
-                      <span style={{ fontSize: "24px" }}>{eq.icon}</span>
-                      <span style={{ fontSize: "13px", fontWeight: 500 }}>{eq.label}</span>
+                      <span style={{ fontSize: 26 }}>{eq.icon}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{eq.label}</span>
                     </button>
                   ))}
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setStep(2)}
-                    className="flex-1 transition-opacity hover:opacity-80"
-                    style={{ ...mono, fontSize: "11px", background: "#f5f0e8", color: "#1a1a1a", padding: "12px", borderRadius: "3px", border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: "1px" }}
-                  >
-                    ← RETOUR
-                  </button>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => setStep(2)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
                   <button
                     disabled={form.equipment.length === 0}
                     onClick={() => setStep(4)}
-                    className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                    style={{ ...btnPrimary, flex: 1, opacity: form.equipment.length > 0 ? 1 : 0.4 }}
                   >
                     CONTINUER →
                   </button>
@@ -293,27 +295,22 @@ export default function OnboardingPage() {
           {/* Step 4 — Données physiques */}
           {step === 4 && (
             <div>
-              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
-                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>DONNÉES PHYSIQUES</h2>
-                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+              <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>DONNÉES PHYSIQUES</h2>
+                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
                   Utilisées pour calculer vos besoins caloriques.
                 </p>
               </div>
-              <div className="p-4 space-y-4">
+              <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
                 {/* Sexe */}
                 <div>
-                  <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>SEXE</p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>SEXE</p>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     {[{ value: "MALE", label: "Homme" }, { value: "FEMALE", label: "Femme" }].map((s) => (
                       <button
                         key={s.value}
                         onClick={() => setForm((f) => ({ ...f, sex: s.value }))}
-                        className="transition-all hover:opacity-90"
-                        style={{
-                          padding: "10px", borderRadius: "3px", fontWeight: 600, fontSize: "14px",
-                          border: form.sex === s.value ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                          background: form.sex === s.value ? "#fff5f5" : "#f5f0e8",
-                        }}
+                        style={{ ...optionStyle(form.sex === s.value), padding: "11px", fontWeight: 600, fontSize: 14, color: form.sex === s.value ? "#FF6500" : "#111827" }}
                       >
                         {s.label}
                       </button>
@@ -322,14 +319,14 @@ export default function OnboardingPage() {
                 </div>
 
                 {/* Âge / Poids / Taille */}
-                <div className="grid grid-cols-3 gap-3">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
                   {[
                     { key: "age", label: "ÂGE", placeholder: "25", min: 10, max: 100 },
                     { key: "weight", label: "POIDS (kg)", placeholder: "70", min: 30, max: 300 },
                     { key: "height", label: "TAILLE (cm)", placeholder: "175", min: 100, max: 250 },
                   ].map((field) => (
                     <div key={field.key}>
-                      <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "6px", letterSpacing: "1px" }}>
+                      <p style={{ ...mono, fontSize: 9, color: "#6B7280", marginBottom: 6, letterSpacing: 1 }}>
                         {field.label}
                       </p>
                       <input
@@ -345,21 +342,18 @@ export default function OnboardingPage() {
                   ))}
                 </div>
 
-                {error && <p style={{ ...mono, fontSize: "11px", color: "#c0392b" }}>{error}</p>}
+                {error && (
+                  <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+                    {error}
+                  </p>
+                )}
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setStep(3)}
-                    className="flex-1 transition-opacity hover:opacity-80"
-                    style={{ ...mono, fontSize: "11px", background: "#f5f0e8", color: "#1a1a1a", padding: "12px", borderRadius: "3px", border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: "1px" }}
-                  >
-                    ← RETOUR
-                  </button>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => setStep(3)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
                   <button
                     disabled={!form.sex || !form.age || !form.weight || !form.height}
                     onClick={() => setStep(5)}
-                    className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{ ...mono, fontSize: "11px", background: "#1a1a1a", color: "#f5f0e8", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                    style={{ ...btnPrimary, flex: 1, opacity: form.sex && form.age && form.weight && form.height ? 1 : 0.4 }}
                   >
                     CONTINUER →
                   </button>
@@ -371,38 +365,33 @@ export default function OnboardingPage() {
           {/* Step 5 — Régime & allergies */}
           {step === 5 && (
             <div>
-              <div className="px-5 pt-5 pb-3" style={{ borderBottom: "1px solid #d8d0c4" }}>
-                <h2 style={{ ...display, fontSize: "22px", letterSpacing: "1px" }}>ALIMENTATION</h2>
-                <p style={{ fontSize: "12px", color: "#7a7268", marginTop: "4px" }}>
+              <div style={{ padding: "20px 24px 16px", borderBottom: "1px solid #F3F4F6" }}>
+                <h2 style={{ ...display, fontSize: 24, letterSpacing: 1, color: "#111827" }}>ALIMENTATION</h2>
+                <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
                   Pour adapter vos menus à vos préférences et contraintes.
                 </p>
               </div>
-              <div className="p-4 space-y-5">
+              <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
 
                 {/* Régime */}
                 <div>
-                  <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>
+                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
                     RÉGIME ALIMENTAIRE
                   </p>
-                  <div className="space-y-2">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {DIETS.map((d) => (
                       <button
                         key={d.value}
                         onClick={() => setForm((f) => ({ ...f, diet: d.value }))}
-                        className="w-full flex items-center gap-3 text-left transition-all hover:opacity-90"
-                        style={{
-                          padding: "11px 14px", borderRadius: "3px",
-                          border: form.diet === d.value ? "2px solid #c0392b" : "1px solid #d8d0c4",
-                          background: form.diet === d.value ? "#fff5f5" : "#f5f0e8",
-                        }}
+                        style={{ ...optionStyle(form.diet === d.value), display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", width: "100%", textAlign: "left" }}
                       >
-                        <span style={{ fontSize: "20px" }}>{d.icon}</span>
-                        <div>
-                          <p style={{ fontWeight: 600, fontSize: "14px" }}>{d.label}</p>
-                          <p style={{ fontSize: "11px", color: "#7a7268" }}>{d.desc}</p>
+                        <span style={{ fontSize: 20 }}>{d.icon}</span>
+                        <div style={{ flex: 1 }}>
+                          <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{d.label}</p>
+                          <p style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{d.desc}</p>
                         </div>
                         {form.diet === d.value && (
-                          <span style={{ marginLeft: "auto", color: "#c0392b", fontSize: "16px" }}>✓</span>
+                          <span style={{ color: "#FF6500", fontSize: 16, flexShrink: 0 }}>✓</span>
                         )}
                       </button>
                     ))}
@@ -411,48 +400,41 @@ export default function OnboardingPage() {
 
                 {/* Allergies */}
                 <div>
-                  <p style={{ ...mono, fontSize: "10px", color: "#7a7268", marginBottom: "8px", letterSpacing: "1px" }}>
-                    ALLERGIES / INTOLÉRANCES <span style={{ color: "#d8d0c4" }}>(optionnel)</span>
+                  <p style={{ ...mono, fontSize: 10, color: "#6B7280", marginBottom: 8, letterSpacing: 1 }}>
+                    ALLERGIES / INTOLÉRANCES{" "}
+                    <span style={{ color: "#D1D5DB" }}>(optionnel)</span>
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8 }}>
                     {ALLERGIES.map((a) => (
                       <button
                         key={a.value}
                         onClick={() => toggleAllergy(a.value)}
-                        className="flex items-center gap-2 text-left transition-all hover:opacity-90"
-                        style={{
-                          padding: "10px 12px", borderRadius: "3px",
-                          border: form.allergies.includes(a.value) ? "2px solid #1a3a5c" : "1px solid #d8d0c4",
-                          background: form.allergies.includes(a.value) ? "#eef2f7" : "#f5f0e8",
-                        }}
+                        style={{ ...allergyStyle(form.allergies.includes(a.value)), display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", textAlign: "left" }}
                       >
-                        <span style={{ fontSize: "18px" }}>{a.icon}</span>
-                        <span style={{ fontSize: "13px", fontWeight: form.allergies.includes(a.value) ? 600 : 400 }}>
+                        <span style={{ fontSize: 18 }}>{a.icon}</span>
+                        <span style={{ fontSize: 13, fontWeight: form.allergies.includes(a.value) ? 600 : 400, color: "#111827" }}>
                           {a.label}
                         </span>
                         {form.allergies.includes(a.value) && (
-                          <span style={{ marginLeft: "auto", color: "#1a3a5c", fontSize: "12px" }}>✓</span>
+                          <span style={{ marginLeft: "auto", color: "#22C55E", fontSize: 12, flexShrink: 0 }}>✓</span>
                         )}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {error && <p style={{ ...mono, fontSize: "11px", color: "#c0392b" }}>{error}</p>}
+                {error && (
+                  <p style={{ ...mono, fontSize: 11, color: "#EF4444", background: "#FEF2F2", padding: "8px 12px", borderRadius: 8 }}>
+                    {error}
+                  </p>
+                )}
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setStep(4)}
-                    className="flex-1 transition-opacity hover:opacity-80"
-                    style={{ ...mono, fontSize: "11px", background: "#f5f0e8", color: "#1a1a1a", padding: "12px", borderRadius: "3px", border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: "1px" }}
-                  >
-                    ← RETOUR
-                  </button>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => setStep(4)} style={{ ...btnBack, flex: 1 }}>← RETOUR</button>
                   <button
                     disabled={loading}
                     onClick={handleSubmit}
-                    className="flex-1 font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{ ...mono, fontSize: "11px", background: "#c0392b", color: "#fff", padding: "12px", borderRadius: "3px", border: "none", cursor: "pointer", letterSpacing: "1px" }}
+                    style={{ ...btnPrimary, flex: 1, opacity: loading ? 0.7 : 1 }}
                   >
                     {loading ? "GÉNÉRATION…" : "🚀 CRÉER MON PROGRAMME"}
                   </button>
