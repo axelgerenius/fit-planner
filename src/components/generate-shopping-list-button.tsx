@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
+const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
 
 export default function GenerateShoppingListButton() {
   const router = useRouter();
@@ -16,8 +17,20 @@ export default function GenerateShoppingListButton() {
   }
 
   return (
-    <Button className="bg-green-600 hover:bg-green-700" onClick={generate} disabled={loading}>
-      {loading ? "Génération..." : "Générer la liste"}
-    </Button>
+    <button
+      onClick={generate}
+      disabled={loading}
+      style={{
+        ...mono, fontSize: 11, letterSpacing: 1,
+        padding: "10px 18px", borderRadius: 12,
+        border: "none", background: "#22C55E", color: "#fff",
+        cursor: loading ? "not-allowed" : "pointer",
+        opacity: loading ? 0.7 : 1,
+        display: "flex", alignItems: "center", gap: 6,
+        fontWeight: 600,
+      }}
+    >
+      {loading ? "…" : "🔄 GÉNÉRER LA LISTE"}
+    </button>
   );
 }

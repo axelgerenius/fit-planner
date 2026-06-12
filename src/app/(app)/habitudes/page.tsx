@@ -10,19 +10,12 @@ const EMOJI_OPTIONS = ["✅", "💧", "🏃", "🥗", "😴", "📚", "🧘", "�
 const QUOTES = [
   { text: "Nous sommes ce que nous faisons de manière répétée. L'excellence n'est donc pas un acte, mais une habitude.", author: "Aristote" },
   { text: "Le secret de votre futur se cache dans votre routine quotidienne.", author: "Mike Murdock" },
-  { text: "Motivez-vous avec des objectifs. Créez des habitudes pour y parvenir.", author: "Anonymous" },
-  { text: "Les gens ne décident pas de leur avenir, ils décident de leurs habitudes, et leurs habitudes décident de leur avenir.", author: "F. M. Alexander" },
-  { text: "Un homme en bonne santé veut dix mille choses, un homme malade n'en veut qu'une.", author: "Confucius" },
-  { text: "Prends soin de ton corps. C'est le seul endroit où tu dois vivre.", author: "Jim Rohn" },
   { text: "La discipline est le pont entre les objectifs et les accomplissements.", author: "Jim Rohn" },
-  { text: "Ce n'est pas la volonté qui crée le changement, c'est la constance.", author: "Anonymous" },
   { text: "Un petit progrès chaque jour mène à de grands résultats.", author: "Satya Nani" },
-  { text: "Il n'est jamais trop tard pour devenir ce que tu aurais pu être.", author: "George Eliot" },
   { text: "Le corps accomplit ce que l'esprit croit.", author: "Napoleon Hill" },
-  { text: "Chaque championnat se gagne d'abord dans la routine quotidienne.", author: "Anonymous" },
   { text: "Tu n'as pas à être exceptionnel chaque jour. Tu dois juste être constant.", author: "Anonymous" },
   { text: "La santé est la première des richesses.", author: "Ralph Waldo Emerson" },
-  { text: "Commence là où tu es. Utilise ce que tu as. Fais ce que tu peux.", author: "Arthur Ashe" },
+  { text: "Prends soin de ton corps. C'est le seul endroit où tu dois vivre.", author: "Jim Rohn" },
 ];
 
 type Habit = { id: string; name: string; emoji: string };
@@ -42,16 +35,10 @@ export default function HabitudesPage() {
   const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)]);
 
   async function loadHabits() {
-    const [habitsRes, logsRes] = await Promise.all([
-      fetch("/api/habits"),
-      fetch("/api/habits/logs?days=1"),
-    ]);
+    const [habitsRes] = await Promise.all([fetch("/api/habits")]);
     const habitsData: Habit[] = await habitsRes.json();
-    const logsData: { byDate: Record<string, number> } = await logsRes.json();
-
     setHabits(habitsData);
 
-    // Fetch today's individual logs
     const todayLogs = await fetch("/api/habits/today");
     if (todayLogs.ok) {
       const ids: string[] = await todayLogs.json();
@@ -101,128 +88,139 @@ export default function HabitudesPage() {
   const total = habits.length;
   const done = habits.filter(h => checked.has(h.id)).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const allDone = total > 0 && done === total;
+
+  const card: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+    border: "1px solid #E5E7EB",
+  };
 
   return (
-    <div style={{ padding: "24px 16px", maxWidth: 600, margin: "0 auto" }}>
+    <div style={{ maxWidth: 600, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ ...display, fontSize: 36, letterSpacing: 2, color: "#1a1a1a", marginBottom: 4 }}>
+      <div style={{ marginBottom: 20 }}>
+        <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>
           MES HABITUDES
         </h1>
-        <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1, textTransform: "capitalize" }}>
+        <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1, textTransform: "capitalize" }}>
           {todayLabel()}
         </p>
       </div>
 
       {/* Progress */}
       {total > 0 && (
-        <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderRadius: 4, padding: "16px 20px", marginBottom: 24 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <span style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1 }}>PROGRESSION DU JOUR</span>
-            <span style={{ ...mono, fontSize: 13, color: pct === 100 ? "#2c7a4b" : "#1a1a1a", fontWeight: 700 }}>{done}/{total}</span>
+        <div style={{ ...card, padding: "16px 20px", marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <span style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>PROGRESSION DU JOUR</span>
+            <span style={{ ...mono, fontSize: 14, color: allDone ? "#22C55E" : "#FF6500", fontWeight: 700 }}>
+              {done}/{total}
+            </span>
           </div>
-          <div style={{ height: 5, background: "#d8d0c4", borderRadius: 0 }}>
-            <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? "#2c7a4b" : "#c0392b", transition: "width 0.3s" }} />
+          <div style={{ height: 6, background: "#F3F4F6", borderRadius: 99 }}>
+            <div style={{ height: "100%", width: `${pct}%`, background: allDone ? "#22C55E" : "#FF6500", borderRadius: 99, transition: "width 0.3s" }} />
           </div>
+          {allDone && (
+            <p style={{ ...mono, fontSize: 10, color: "#22C55E", letterSpacing: 1, marginTop: 8, textAlign: "right" }}>
+              🎉 TOUTES COMPLÉTÉES !
+            </p>
+          )}
         </div>
       )}
 
       {/* Habits list */}
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 8 }}>
         {loading ? (
-          <p style={{ ...mono, fontSize: 11, color: "#7a7268" }}>Chargement…</p>
+          <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
         ) : habits.length === 0 ? (
-          <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderRadius: 4, padding: 32, textAlign: "center" }}>
-            <p style={{ fontSize: 32, marginBottom: 8 }}>🌱</p>
-            <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1 }}>AUCUNE HABITUDE DÉFINIE</p>
-            <p style={{ fontSize: 13, color: "#7a7268", marginTop: 4 }}>Ajoute ta première habitude ci-dessous.</p>
+          <div style={{ ...card, padding: 40, textAlign: "center" }}>
+            <p style={{ fontSize: 40, marginBottom: 12 }}>🌱</p>
+            <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>AUCUNE HABITUDE DÉFINIE</p>
+            <p style={{ fontSize: 13, color: "#6B7280", marginTop: 6 }}>Ajoute ta première habitude ci-dessous.</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {habits.map(habit => {
-              const isDone = checked.has(habit.id);
-              return (
-                <div
-                  key={habit.id}
-                  style={{
-                    background: "#fff",
-                    border: `1px solid ${isDone ? "#2c7a4b" : "#d8d0c4"}`,
-                    borderLeft: `4px solid ${isDone ? "#2c7a4b" : "#d8d0c4"}`,
-                    borderRadius: 4,
-                    padding: "14px 16px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    cursor: "pointer",
-                    transition: "border-color 0.2s",
-                  }}
-                  onClick={() => toggle(habit.id)}
-                >
-                  <span style={{ fontSize: 22 }}>{habit.emoji}</span>
-                  <span style={{
-                    flex: 1,
-                    fontSize: 14,
-                    color: isDone ? "#7a7268" : "#1a1a1a",
-                    textDecoration: isDone ? "line-through" : "none",
-                    fontWeight: isDone ? 400 : 500,
-                  }}>
-                    {habit.name}
-                  </span>
-                  <div style={{
-                    width: 22, height: 22,
-                    border: `2px solid ${isDone ? "#2c7a4b" : "#d8d0c4"}`,
-                    borderRadius: 3,
-                    background: isDone ? "#2c7a4b" : "transparent",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0,
-                  }}>
-                    {isDone && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
-                  </div>
-                  <button
-                    onClick={e => { e.stopPropagation(); deleteHabit(habit.id); }}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#d8d0c4", padding: 4, lineHeight: 1, fontSize: 16 }}
-                    title="Supprimer"
-                  >
-                    ×
-                  </button>
+          habits.map(habit => {
+            const isDone = checked.has(habit.id);
+            return (
+              <div
+                key={habit.id}
+                style={{
+                  background: "#fff",
+                  borderRadius: 16,
+                  borderLeft: `4px solid ${isDone ? "#22C55E" : "#E5E7EB"}`,
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                  padding: "14px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  cursor: "pointer",
+                  transition: "border-color 0.2s, opacity 0.2s",
+                  opacity: isDone ? 0.75 : 1,
+                }}
+                onClick={() => toggle(habit.id)}
+              >
+                <span style={{ fontSize: 22, flexShrink: 0 }}>{habit.emoji}</span>
+                <span style={{
+                  flex: 1,
+                  fontSize: 14,
+                  color: isDone ? "#6B7280" : "#111827",
+                  textDecoration: isDone ? "line-through" : "none",
+                  fontWeight: isDone ? 400 : 500,
+                }}>
+                  {habit.name}
+                </span>
+                <div style={{
+                  width: 24, height: 24,
+                  borderRadius: "50%",
+                  border: `2px solid ${isDone ? "#22C55E" : "#D1D5DB"}`,
+                  background: isDone ? "#22C55E" : "transparent",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0, transition: "all 0.2s",
+                }}>
+                  {isDone && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
                 </div>
-              );
-            })}
-          </div>
+                <button
+                  onClick={e => { e.stopPropagation(); deleteHabit(habit.id); }}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#D1D5DB", padding: 4, lineHeight: 1, fontSize: 18 }}
+                >
+                  ×
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
 
-      {/* Citation du jour */}
-      <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: "4px solid #1a1a1a", borderRadius: 4, padding: "12px 16px", marginBottom: 16 }}>
-        <p style={{ fontSize: 13, color: "#1a1a1a", lineHeight: 1.6, fontStyle: "italic", marginBottom: 6 }}>
+      {/* Quote */}
+      <div style={{ ...card, padding: "14px 18px", marginBottom: 16, borderLeft: "4px solid #FF6500" }}>
+        <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.7, fontStyle: "italic", marginBottom: 6 }}>
           &ldquo;{quote.text}&rdquo;
         </p>
-        <p style={{ ...mono, fontSize: 10, color: "#7a7268", letterSpacing: 1 }}>— {quote.author.toUpperCase()}</p>
+        <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1 }}>— {quote.author.toUpperCase()}</p>
       </div>
 
       {/* Add habit */}
       {showForm ? (
-        <form onSubmit={addHabit} style={{ background: "#fff", border: "1px solid #d8d0c4", borderRadius: 4, padding: 20 }}>
-          <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1, marginBottom: 12 }}>NOUVELLE HABITUDE</p>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            <input
-              value={newName}
-              onChange={e => setNewName(e.target.value)}
-              placeholder="Ex: Boire 2L d'eau"
-              required
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="sentences"
-              spellCheck={false}
-              style={{ flex: 1, border: "1px solid #d8d0c4", borderRadius: 3, padding: "10px 12px", fontSize: 16, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }}
-            />
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <p style={{ ...mono, fontSize: 10, color: "#7a7268", letterSpacing: 1, marginBottom: 8 }}>EMOJI</p>
+        <form onSubmit={addHabit} style={{ ...card, padding: 20 }}>
+          <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 14 }}>NOUVELLE HABITUDE</p>
+          <input
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
+            placeholder="Ex: Boire 2L d'eau"
+            required
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
+            spellCheck={false}
+            style={{ width: "100%", border: "1px solid #E5E7EB", borderRadius: 10, padding: "12px 14px", fontSize: 16, background: "#F9FAFB", color: "#111827", outline: "none", boxSizing: "border-box", marginBottom: 14 }}
+          />
+          <div style={{ marginBottom: 18 }}>
+            <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 8 }}>EMOJI</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {EMOJI_OPTIONS.map(em => (
                 <button
@@ -230,9 +228,9 @@ export default function HabitudesPage() {
                   type="button"
                   onClick={() => setNewEmoji(em)}
                   style={{
-                    fontSize: 20, padding: "4px 6px", borderRadius: 4,
-                    border: `2px solid ${newEmoji === em ? "#1a1a1a" : "#d8d0c4"}`,
-                    background: newEmoji === em ? "#ede8df" : "transparent",
+                    fontSize: 20, padding: "6px 8px", borderRadius: 10,
+                    border: `2px solid ${newEmoji === em ? "#FF6500" : "#E5E7EB"}`,
+                    background: newEmoji === em ? "#FFF3ED" : "transparent",
                     cursor: "pointer",
                   }}
                 >
@@ -245,14 +243,14 @@ export default function HabitudesPage() {
             <button
               type="submit"
               disabled={saving}
-              style={{ ...mono, fontSize: 11, background: "#1a1a1a", color: "#f5f0e8", padding: "10px 20px", borderRadius: 3, border: "none", cursor: "pointer", letterSpacing: 1 }}
+              style={{ ...mono, fontSize: 11, background: "#FF6500", color: "#fff", padding: "11px 24px", borderRadius: 10, border: "none", cursor: "pointer", letterSpacing: 1, opacity: saving ? 0.6 : 1 }}
             >
               {saving ? "…" : "AJOUTER"}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              style={{ ...mono, fontSize: 11, background: "transparent", color: "#7a7268", padding: "10px 20px", borderRadius: 3, border: "1px solid #d8d0c4", cursor: "pointer", letterSpacing: 1 }}
+              style={{ ...mono, fontSize: 11, background: "transparent", color: "#6B7280", padding: "11px 20px", borderRadius: 10, border: "1px solid #E5E7EB", cursor: "pointer", letterSpacing: 1 }}
             >
               ANNULER
             </button>
@@ -261,7 +259,12 @@ export default function HabitudesPage() {
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          style={{ ...mono, fontSize: 11, background: "transparent", color: "#1a1a1a", padding: "12px 20px", borderRadius: 3, border: "1px solid #1a1a1a", cursor: "pointer", letterSpacing: 1, width: "100%" }}
+          style={{
+            ...mono, fontSize: 11, background: "#fff", color: "#FF6500",
+            padding: "14px 20px", borderRadius: 14, border: "2px dashed #FF6500",
+            cursor: "pointer", letterSpacing: 1, width: "100%",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+          }}
         >
           + AJOUTER UNE HABITUDE
         </button>

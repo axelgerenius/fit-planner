@@ -1,8 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Card, CardContent } from "@/components/ui/card";
 import GenerateShoppingListButton from "@/components/generate-shopping-list-button";
 import ShoppingListManager from "@/components/shopping-list-manager";
+
+const mono: React.CSSProperties = { fontFamily: "var(--font-space-mono), 'Space Mono', monospace" };
+const display: React.CSSProperties = { fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif" };
 
 export default async function CoursesPage() {
   const session = await auth();
@@ -15,32 +17,35 @@ export default async function CoursesPage() {
     include: { items: { orderBy: { category: "asc" } } },
   });
 
+  const weekLabel = weekStart.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+    <div style={{ maxWidth: 600, margin: "0 auto", paddingBottom: 32 }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 className="text-2xl font-bold">🛒 Liste de courses</h1>
-          <p className="text-muted-foreground mt-1">
-            Semaine du {weekStart.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+          <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>COURSES</h1>
+          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>
+            SEMAINE DU {weekLabel.toUpperCase()}
           </p>
         </div>
         <GenerateShoppingListButton />
       </div>
 
       {shoppingList ? (
-        <ShoppingListManager
-          listId={shoppingList.id}
-          initialItems={shoppingList.items}
-        />
+        <ShoppingListManager listId={shoppingList.id} initialItems={shoppingList.items} />
       ) : (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            <p className="text-lg mb-2">Aucune liste pour cette semaine</p>
-            <p className="text-sm">
-              Cliquez sur &quot;Générer la liste&quot; pour créer votre liste de courses à partir des menus de la semaine.
-            </p>
-          </CardContent>
-        </Card>
+        <div style={{
+          background: "#fff", borderRadius: 16, padding: 48,
+          textAlign: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+          border: "1px solid #E5E7EB",
+        }}>
+          <p style={{ fontSize: 40, marginBottom: 12 }}>🛒</p>
+          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1, marginBottom: 6 }}>AUCUNE LISTE POUR CETTE SEMAINE</p>
+          <p style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.6 }}>
+            Appuie sur &quot;Générer la liste&quot; pour créer ta liste de courses à partir des menus de la semaine.
+          </p>
+        </div>
       )}
     </div>
   );

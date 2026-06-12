@@ -27,7 +27,6 @@ function fmtDay(iso: string) {
 function fmtWeek(iso: string) {
   return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 }
-
 function mondayOf(d: Date): string {
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
@@ -35,8 +34,6 @@ function mondayOf(d: Date): string {
   monday.setDate(diff);
   return monday.toISOString().split("T")[0];
 }
-
-// Aggregate daily byDate into weekly buckets
 function toWeeklyBuckets(byDate: Record<string, number>, days: number) {
   const buckets: Record<string, number> = {};
   for (let i = days - 1; i >= 0; i--) {
@@ -48,7 +45,6 @@ function toWeeklyBuckets(byDate: Record<string, number>, days: number) {
   }
   return buckets;
 }
-
 function buildDailyPoints(byDate: Record<string, number>, days: number, field: string) {
   const result = [];
   for (let i = days - 1; i >= 0; i--) {
@@ -59,7 +55,6 @@ function buildDailyPoints(byDate: Record<string, number>, days: number, field: s
   }
   return result;
 }
-
 function buildWeeklyPoints(byDate: Record<string, number>, days: number, field: string) {
   const buckets = toWeeklyBuckets(byDate, days);
   return Object.entries(buckets)
@@ -67,10 +62,17 @@ function buildWeeklyPoints(byDate: Record<string, number>, days: number, field: 
     .map(([week, val]) => ({ date: fmtWeek(week), [field]: val }));
 }
 
-function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
+function Section({ title, accentColor, children }: { title: string; accentColor: string; children: React.ReactNode }) {
   return (
-    <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: `4px solid ${color}`, borderRadius: 4, padding: "20px 24px", marginBottom: 20 }}>
-      <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1, marginBottom: 16 }}>{title}</p>
+    <div style={{
+      background: "#fff",
+      borderRadius: 16,
+      borderLeft: `4px solid ${accentColor}`,
+      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+      padding: "20px",
+      marginBottom: 14,
+    }}>
+      <p style={{ ...mono, fontSize: 10, color: "#6B7280", letterSpacing: 1, marginBottom: 16 }}>{title}</p>
       {children}
     </div>
   );
@@ -79,30 +81,28 @@ function Section({ title, color, children }: { title: string; color: string; chi
 function CustomTooltip({ active, payload, label, unit }: { active?: boolean; payload?: { value: number }[]; label?: string; unit?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: "#fff", border: "1px solid #d8d0c4", padding: "8px 12px", borderRadius: 3 }}>
-      <p style={{ ...mono, fontSize: 10, color: "#7a7268" }}>{label}</p>
-      <p style={{ ...mono, fontSize: 12, color: "#1a1a1a", fontWeight: 700 }}>{payload[0].value}{unit}</p>
+    <div style={{ background: "#fff", border: "1px solid #E5E7EB", padding: "8px 12px", borderRadius: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+      <p style={{ ...mono, fontSize: 10, color: "#6B7280" }}>{label}</p>
+      <p style={{ ...mono, fontSize: 13, color: "#111827", fontWeight: 700 }}>{payload[0].value}{unit}</p>
     </div>
   );
 }
 
 function RangeBar({ range, onChange }: { range: Range; onChange: (r: Range) => void }) {
   return (
-    <div style={{ display: "flex", gap: 4 }}>
+    <div style={{ display: "flex", gap: 6, background: "#F3F4F6", borderRadius: 10, padding: 4 }}>
       {RANGES.map(r => (
         <button
           key={r.value}
           onClick={() => onChange(r.value)}
           style={{
-            ...mono,
-            fontSize: 10,
-            letterSpacing: 1,
-            padding: "5px 12px",
-            borderRadius: 3,
-            border: "1px solid #d8d0c4",
-            background: range === r.value ? "#1a1a1a" : "transparent",
-            color: range === r.value ? "#f5f0e8" : "#7a7268",
+            ...mono, fontSize: 10, letterSpacing: 1,
+            padding: "6px 14px", borderRadius: 8,
+            border: "none",
+            background: range === r.value ? "#FF6500" : "transparent",
+            color: range === r.value ? "#fff" : "#6B7280",
             cursor: "pointer",
+            transition: "all 0.2s",
           }}
         >
           {r.label}
@@ -120,7 +120,6 @@ export default function HistoriquePage() {
   const [newWeight, setNewWeight] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-  // Progression par exercice
   const [exerciseNames, setExerciseNames] = useState<string[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<string>("");
   const [exercisePoints, setExercisePoints] = useState<ExercisePoint[]>([]);
@@ -165,148 +164,129 @@ export default function HistoriquePage() {
 
   const isYearly = range === 365;
   const xInterval = range === 7 ? 0 : range === 30 ? 6 : 4;
-
-  const habitChartData = habitData
-    ? (isYearly
-        ? buildWeeklyPoints(habitData.byDate, range, "habitudes")
-        : buildDailyPoints(habitData.byDate, range, "habitudes"))
-    : [];
-
-  const sessionsChartData = sessionsData
-    ? (isYearly
-        ? buildWeeklyPoints(sessionsData.byDate, range, "séances")
-        : buildDailyPoints(sessionsData.byDate, range, "séances"))
-    : [];
-
-  const weightChartData = weightLogs.map(l => ({
-    date: fmtDay(l.date),
-    poids: l.weight,
-  }));
-
   const rangeLabel = range === 7 ? "7 DERNIERS JOURS" : range === 30 ? "30 DERNIERS JOURS" : "12 DERNIERS MOIS";
   const groupLabel = isYearly ? "/ SEMAINE" : "/ JOUR";
 
+  const habitChartData = habitData
+    ? (isYearly ? buildWeeklyPoints(habitData.byDate, range, "habitudes") : buildDailyPoints(habitData.byDate, range, "habitudes"))
+    : [];
+  const sessionsChartData = sessionsData
+    ? (isYearly ? buildWeeklyPoints(sessionsData.byDate, range, "séances") : buildDailyPoints(sessionsData.byDate, range, "séances"))
+    : [];
+  const weightChartData = weightLogs.map(l => ({ date: fmtDay(l.date), poids: l.weight }));
+
   return (
-    <div style={{ padding: "24px 16px", maxWidth: 700, margin: "0 auto" }}>
+    <div style={{ maxWidth: 700, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <div>
-          <h1 style={{ ...display, fontSize: 36, letterSpacing: 2, color: "#1a1a1a", marginBottom: 4 }}>
-            HISTORIQUE
-          </h1>
-          <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1 }}>{rangeLabel}</p>
+          <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>HISTORIQUE</h1>
+          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>{rangeLabel}</p>
         </div>
         <RangeBar range={range} onChange={setRange} />
       </div>
 
       {loading ? (
-        <p style={{ ...mono, fontSize: 11, color: "#7a7268" }}>Chargement…</p>
+        <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
       ) : (
         <>
           {/* Poids */}
-          <Section title="ÉVOLUTION DU POIDS (kg)" color="#1a3a5c">
+          <Section title="ÉVOLUTION DU POIDS (kg)" accentColor="#3B82F6">
             {weightChartData.length >= 2 ? (
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={weightChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ede8df" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} interval={xInterval} />
-                  <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
+                  <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
                   <Tooltip content={<CustomTooltip unit=" kg" />} />
-                  <Line type="monotone" dataKey="poids" stroke="#1a3a5c" strokeWidth={2} dot={range === 365 ? false : { r: 3, fill: "#1a3a5c" }} />
+                  <Line type="monotone" dataKey="poids" stroke="#3B82F6" strokeWidth={2} dot={range === 365 ? false : { r: 3, fill: "#3B82F6" }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p style={{ fontSize: 13, color: "#7a7268" }}>Pas encore assez de données. Enregistre ton poids régulièrement.</p>
+              <p style={{ fontSize: 13, color: "#6B7280" }}>Pas encore assez de données. Enregistre ton poids régulièrement.</p>
             )}
             <form onSubmit={logWeight} style={{ display: "flex", gap: 8, marginTop: 16 }}>
               <input
                 type="number" step="0.1" min="20" max="300"
                 value={newWeight} onChange={e => setNewWeight(e.target.value)}
                 placeholder="Ex: 75.5"
-                style={{ flex: 1, border: "1px solid #d8d0c4", borderRadius: 3, padding: "8px 12px", fontSize: 13, background: "#f5f0e8", color: "#1a1a1a", outline: "none" }}
+                style={{ flex: 1, border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 13, background: "#F9FAFB", color: "#111827", outline: "none" }}
               />
               <button type="submit" disabled={saving}
-                style={{ ...mono, fontSize: 10, background: "#1a3a5c", color: "#fff", padding: "8px 16px", borderRadius: 3, border: "none", cursor: "pointer", letterSpacing: 1 }}>
+                style={{ ...mono, fontSize: 10, background: "#3B82F6", color: "#fff", padding: "10px 18px", borderRadius: 10, border: "none", cursor: "pointer", letterSpacing: 1, opacity: saving ? 0.6 : 1 }}>
                 {saving ? "…" : "AJOUTER"}
               </button>
             </form>
           </Section>
 
           {/* Habitudes */}
-          <Section title={`HABITUDES COMPLÉTÉES ${groupLabel}`} color="#2c7a4b">
+          <Section title={`HABITUDES COMPLÉTÉES ${groupLabel}`} accentColor="#22C55E">
             {habitChartData.some(d => (d as Record<string, number>)["habitudes"] > 0) ? (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={habitChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ede8df" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} interval={xInterval} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
                   <Tooltip content={<CustomTooltip unit=" habitude(s)" />} />
-                  <Bar dataKey="habitudes" fill="#2c7a4b" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="habitudes" fill="#22C55E" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p style={{ fontSize: 13, color: "#7a7268" }}>Aucune habitude cochée sur cette période.</p>
+              <p style={{ fontSize: 13, color: "#6B7280" }}>Aucune habitude cochée sur cette période.</p>
             )}
           </Section>
 
           {/* Séances */}
-          <Section title={`SÉANCES EFFECTUÉES ${groupLabel}`} color="#c0392b">
+          <Section title={`SÉANCES EFFECTUÉES ${groupLabel}`} accentColor="#FF6500">
             {sessionsChartData.some(d => (d as Record<string, number>)["séances"] > 0) ? (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={sessionsChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ede8df" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} interval={xInterval} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} interval={xInterval} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
                   <Tooltip content={<CustomTooltip unit=" séance(s)" />} />
-                  <Bar dataKey="séances" fill="#c0392b" radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="séances" fill="#FF6500" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p style={{ fontSize: 13, color: "#7a7268" }}>Aucune séance effectuée sur cette période.</p>
+              <p style={{ fontSize: 13, color: "#6B7280" }}>Aucune séance effectuée sur cette période.</p>
             )}
           </Section>
 
           {/* Progression par exercice */}
-          <Section title="PROGRESSION PAR EXERCICE" color="#f39c12">
+          <Section title="PROGRESSION PAR EXERCICE" accentColor="#F59E0B">
             {exerciseNames.length === 0 ? (
-              <p style={{ fontSize: 13, color: "#7a7268" }}>
+              <p style={{ fontSize: 13, color: "#6B7280" }}>
                 Valide des séances dans le Carnet pour suivre ta progression.
               </p>
             ) : (
               <>
                 <div style={{ marginBottom: 14 }}>
-                  <p style={{ ...mono, fontSize: 9, color: "#7a7268", letterSpacing: 2, marginBottom: 8 }}>
-                    CHOISIR UN EXERCICE
-                  </p>
+                  <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 2, marginBottom: 8 }}>CHOISIR UN EXERCICE</p>
                   <select
                     value={selectedExercise}
                     onChange={e => setSelectedExercise(e.target.value)}
-                    style={{ width: "100%", border: "1px solid #d8d0c4", borderRadius: 4, padding: "10px 12px", fontSize: 13, background: "#f5f0e8", color: "#1a1a1a", outline: "none", fontFamily: "inherit" }}
+                    style={{ width: "100%", border: "1px solid #E5E7EB", borderRadius: 10, padding: "10px 14px", fontSize: 13, background: "#F9FAFB", color: "#111827", outline: "none", fontFamily: "inherit" }}
                   >
                     <option value="">-- Sélectionner --</option>
-                    {exerciseNames.map(name => (
-                      <option key={name} value={name}>{name}</option>
-                    ))}
+                    {exerciseNames.map(name => <option key={name} value={name}>{name}</option>)}
                   </select>
                 </div>
-
                 {selectedExercise && exercisePoints.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={exercisePoints.map(p => ({
                       date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }),
                       kg: p.weightKg ?? 0,
                     }))}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ede8df" />
-                      <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
-                      <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#7a7268" }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                      <XAxis dataKey="date" tick={{ fontSize: 9, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
+                      <YAxis domain={["auto", "auto"]} tick={{ fontSize: 10, fontFamily: "Space Mono, monospace", fill: "#6B7280" }} />
                       <Tooltip content={<CustomTooltip unit=" kg" />} />
-                      <Line type="monotone" dataKey="kg" stroke="#f39c12" strokeWidth={2} dot={{ r: 4, fill: "#f39c12" }} />
+                      <Line type="monotone" dataKey="kg" stroke="#F59E0B" strokeWidth={2} dot={{ r: 4, fill: "#F59E0B" }} />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : selectedExercise ? (
-                  <p style={{ fontSize: 13, color: "#7a7268" }}>
-                    Pas encore assez de données pour cet exercice (minimum 2 séances).
-                  </p>
+                  <p style={{ fontSize: 13, color: "#6B7280" }}>Pas encore assez de données (minimum 2 séances).</p>
                 ) : null}
               </>
             )}

@@ -53,6 +53,7 @@ export default async function PlanningPage() {
             isToday={s.dayOfWeek === todayIndex}
             todayIndex={todayIndex}
             dayLabel={DAY_NAMES[s.dayOfWeek].toUpperCase().slice(0, 3)}
+            fullDayLabel={DAY_NAMES[s.dayOfWeek].toUpperCase()}
           />
         ))}
       </div>

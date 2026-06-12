@@ -27,8 +27,13 @@ function fmtMonth(iso: string) {
 }
 
 const SESSION_BORDER: Record<string, string> = {
-  STRENGTH: "#1a3a5c", CARDIO: "#f39c12", HIIT: "#c0392b",
-  YOGA_STRETCH: "#7a7268", FULL_BODY: "#2c7a4b", REST: "#d8d0c4",
+  STRENGTH: "#1E3A8A", CARDIO: "#FF6500", HIIT: "#EF4444",
+  YOGA_STRETCH: "#6B7280", FULL_BODY: "#22C55E", REST: "#E5E7EB",
+};
+
+const SESSION_ICONS: Record<string, string> = {
+  STRENGTH: "🏋️", CARDIO: "🏃", HIIT: "🔥",
+  YOGA_STRETCH: "🧘", FULL_BODY: "💪", REST: "🛌",
 };
 
 export default function CarnetPage() {
@@ -56,7 +61,6 @@ export default function CarnetPage() {
     });
   }
 
-  // Grouper par mois
   const grouped: { month: string; entries: WorkoutLog[] }[] = [];
   for (const log of logs) {
     const month = fmtMonth(log.date);
@@ -66,75 +70,82 @@ export default function CarnetPage() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto" }}>
+    <div style={{ maxWidth: 600, margin: "0 auto", paddingBottom: 32 }}>
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ ...display, fontSize: 36, letterSpacing: 2, color: "#1a1a1a", marginBottom: 4 }}>CARNET</h1>
-        <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1 }}>
+      <div style={{ marginBottom: 20 }}>
+        <h1 style={{ ...display, fontSize: 32, letterSpacing: 2, color: "#111827", marginBottom: 4 }}>CARNET</h1>
+        <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>
           {total} SÉANCE{total !== 1 ? "S" : ""} ENREGISTRÉE{total !== 1 ? "S" : ""}
         </p>
       </div>
 
       {loading ? (
-        <p style={{ ...mono, fontSize: 11, color: "#7a7268" }}>Chargement…</p>
+        <p style={{ ...mono, fontSize: 11, color: "#6B7280" }}>Chargement…</p>
       ) : logs.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px solid #d8d0c4", borderRadius: 4, padding: 32, textAlign: "center" }}>
-          <p style={{ fontSize: 32, marginBottom: 8 }}>📖</p>
-          <p style={{ ...mono, fontSize: 11, color: "#7a7268", letterSpacing: 1 }}>CARNET VIDE</p>
-          <p style={{ fontSize: 13, color: "#7a7268", marginTop: 4 }}>
-            Valide une séance dans Planning pour commencer ton carnet.
+        <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: 48, textAlign: "center" }}>
+          <p style={{ fontSize: 40, marginBottom: 12 }}>📖</p>
+          <p style={{ ...mono, fontSize: 11, color: "#6B7280", letterSpacing: 1 }}>CARNET VIDE</p>
+          <p style={{ fontSize: 13, color: "#6B7280", marginTop: 6 }}>
+            Valide une séance dans Sport pour commencer ton carnet.
           </p>
         </div>
       ) : (
         <>
           {grouped.map(({ month, entries }) => (
             <div key={month} style={{ marginBottom: 28 }}>
-              {/* Titre du mois */}
-              <p style={{ ...mono, fontSize: 10, letterSpacing: 2, color: "#7a7268", marginBottom: 12, textTransform: "uppercase" }}>
+              <p style={{ ...mono, fontSize: 10, letterSpacing: 2, color: "#6B7280", marginBottom: 10, textTransform: "uppercase" }}>
                 {month}
               </p>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {entries.map(log => {
                   const isOpen = expanded.has(log.id);
-                  const border = SESSION_BORDER[log.sessionType] ?? "#d8d0c4";
+                  const borderColor = SESSION_BORDER[log.sessionType] ?? "#E5E7EB";
+                  const icon = log.sessionIcon ?? SESSION_ICONS[log.sessionType] ?? "🏋️";
                   return (
-                    <div key={log.id}
-                      style={{ background: "#fff", border: "1px solid #d8d0c4", borderLeft: `4px solid ${border}`, borderRadius: 4, overflow: "hidden" }}>
-
-                      {/* En-tête cliquable */}
-                      <button onClick={() => toggleExpand(log.id)}
-                        style={{ all: "unset", cursor: "pointer", display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", width: "100%", boxSizing: "border-box" }}>
-                        <span style={{ fontSize: 20 }}>{log.sessionIcon ?? "🏋️"}</span>
+                    <div key={log.id} style={{
+                      background: "#fff",
+                      borderRadius: 16,
+                      borderLeft: `4px solid ${borderColor}`,
+                      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                      overflow: "hidden",
+                    }}>
+                      <button
+                        onClick={() => toggleExpand(log.id)}
+                        style={{ all: "unset", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", width: "100%", boxSizing: "border-box" }}
+                      >
+                        <span style={{ fontSize: 20, flexShrink: 0 }}>{icon}</span>
                         <div style={{ flex: 1, textAlign: "left" }}>
-                          <p style={{ fontWeight: 600, fontSize: 14, color: "#1a1a1a" }}>{log.sessionName}</p>
-                          <p style={{ ...mono, fontSize: 9, color: "#7a7268", letterSpacing: 1, marginTop: 2, textTransform: "capitalize" }}>
+                          <p style={{ fontWeight: 600, fontSize: 14, color: "#111827" }}>{log.sessionName}</p>
+                          <p style={{ ...mono, fontSize: 9, color: "#6B7280", letterSpacing: 1, marginTop: 2, textTransform: "capitalize" }}>
                             {fmtDate(log.date)}{log.durationMin ? ` · ${log.durationMin} min` : ""}
                           </p>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           {log.exercises.length > 0 && (
-                            <span style={{ ...mono, fontSize: 9, color: "#7a7268", letterSpacing: 1 }}>
+                            <span style={{ ...mono, fontSize: 10, background: "#F3F4F6", color: "#6B7280", padding: "3px 8px", borderRadius: 6, letterSpacing: 1 }}>
                               {log.exercises.length} exo{log.exercises.length > 1 ? "s" : ""}
                             </span>
                           )}
-                          <span style={{ color: "#7a7268", fontSize: 14, transition: "transform 0.2s", display: "block", transform: isOpen ? "rotate(180deg)" : "none" }}>▾</span>
+                          <span style={{ color: "#9CA3AF", fontSize: 14, transition: "transform 0.2s", display: "block", transform: isOpen ? "rotate(180deg)" : "none" }}>▾</span>
                         </div>
                       </button>
 
-                      {/* Détail expandable */}
                       {isOpen && (
-                        <div style={{ borderTop: "1px solid #ede8df", padding: "12px 16px" }}>
+                        <div style={{ borderTop: "1px solid #F3F4F6", padding: "12px 16px", background: "#F9FAFB" }}>
                           {log.exercises.length > 0 && (
                             <div style={{ marginBottom: log.notes ? 12 : 0 }}>
                               {log.exercises.map((ex, i) => (
                                 <div key={ex.id} style={{
                                   display: "flex", justifyContent: "space-between", alignItems: "center",
-                                  padding: "6px 0",
-                                  borderBottom: i < log.exercises.length - 1 ? "1px solid #f5f0e8" : "none",
+                                  padding: "7px 0",
+                                  borderBottom: i < log.exercises.length - 1 ? "1px solid #E5E7EB" : "none",
                                 }}>
-                                  <span style={{ fontSize: 13, fontWeight: 500 }}>{ex.name}</span>
-                                  <span style={{ ...mono, fontSize: 11, color: "#7a7268" }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#D1D5DB", display: "inline-block", flexShrink: 0 }} />
+                                    <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{ex.name}</span>
+                                  </div>
+                                  <span style={{ ...mono, fontSize: 11, color: "#6B7280" }}>
                                     {[
                                       ex.sets && ex.reps ? `${ex.sets}×${ex.reps}` : ex.sets ? `${ex.sets} sér.` : ex.reps ?? null,
                                       ex.weightKg ? `${ex.weightKg}kg` : null,
@@ -146,7 +157,7 @@ export default function CarnetPage() {
                             </div>
                           )}
                           {log.notes && (
-                            <p style={{ fontSize: 13, color: "#7a7268", fontStyle: "italic", lineHeight: 1.6, marginTop: 8 }}>
+                            <p style={{ fontSize: 13, color: "#6B7280", fontStyle: "italic", lineHeight: 1.6, marginTop: 8 }}>
                               &ldquo;{log.notes}&rdquo;
                             </p>
                           )}
@@ -160,8 +171,10 @@ export default function CarnetPage() {
           ))}
 
           {logs.length < total && (
-            <button onClick={() => loadLogs(logs.length)}
-              style={{ ...mono, fontSize: 10, letterSpacing: 1, padding: "12px 20px", borderRadius: 4, border: "1px solid #d8d0c4", background: "transparent", color: "#7a7268", cursor: "pointer", width: "100%", marginTop: 8 }}>
+            <button
+              onClick={() => loadLogs(logs.length)}
+              style={{ ...mono, fontSize: 10, letterSpacing: 1, padding: "14px 20px", borderRadius: 14, border: "1.5px solid #E5E7EB", background: "#fff", color: "#6B7280", cursor: "pointer", width: "100%", marginTop: 4 }}
+            >
               CHARGER PLUS ({total - logs.length} restantes)
             </button>
           )}
