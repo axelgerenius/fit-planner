@@ -86,6 +86,8 @@ model UserProfile {
   diet           Diet        @default(OMNIVORE)
   allergies      String[]
 
+  sessionsPerWeek Int?
+
   onboardingDone Boolean  @default(false)
   updatedAt      DateTime @updatedAt
 }
@@ -142,6 +144,9 @@ model WorkoutPlan {
   sessions WorkoutSession[]
   isActive Boolean          @default(true)
   createdAt DateTime        @default(now())
+
+  weekIndex        Int      @default(0)
+  currentWeekStart DateTime @default(now())
 }
 
 model WorkoutSession {
@@ -189,6 +194,9 @@ model NutritionPlan {
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   weekMenus DayMenu[]
   createdAt DateTime  @default(now())
+
+  weekIndex        Int      @default(0)
+  currentWeekStart DateTime @default(now())
 }
 
 model DayMenu {

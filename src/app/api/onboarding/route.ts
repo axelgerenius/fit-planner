@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Goal, Level, Equipment, Sex, Diet, Allergy } from "@/generated/prisma/client";
 import { getWorkoutTemplate } from "@/lib/templates/workouts";
 import { computeTargetCalories, generateWeekMenus } from "@/lib/templates/nutrition";
+import { getWeekStart } from "@/lib/week";
 
 const schema = z.object({
   goal: z.nativeEnum(Goal),
@@ -46,8 +47,8 @@ export async function POST(req: Request) {
     // Profil utilisateur
     await tx.userProfile.upsert({
       where: { userId },
-      create: { userId, goal, level, equipment, sex, age, weight, height, bmr, tdee, targetCalories, diet, allergies, onboardingDone: true },
-      update: { goal, level, equipment, sex, age, weight, height, bmr, tdee, targetCalories, diet, allergies, onboardingDone: true },
+      create: { userId, goal, level, equipment, sex, age, weight, height, bmr, tdee, targetCalories, diet, allergies, sessionsPerWeek, onboardingDone: true },
+      update: { goal, level, equipment, sex, age, weight, height, bmr, tdee, targetCalories, diet, allergies, sessionsPerWeek, onboardingDone: true },
     });
 
     // Désactiver les anciens plans
@@ -61,6 +62,8 @@ export async function POST(req: Request) {
         goal,
         level,
         isActive: true,
+        weekIndex: 0,
+        currentWeekStart: getWeekStart(),
         sessions: {
           create: workoutTemplate.sessions.map((s) => ({
             dayOfWeek: s.dayOfWeek,
@@ -80,6 +83,8 @@ export async function POST(req: Request) {
     await tx.nutritionPlan.create({
       data: {
         userId,
+        weekIndex: 0,
+        currentWeekStart: getWeekStart(),
         weekMenus: {
           create: weekMenus.map((day) => ({
             dayOfWeek: day.dayOfWeek,
