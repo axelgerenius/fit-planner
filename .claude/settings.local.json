@@ -32,7 +32,26 @@
       "Bash(npx tsx -e ' *)",
       "Bash(npx tsx *)",
       "Bash(git fetch *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(node -e \"console.log\\(require\\('fs'\\).existsSync\\('node_modules/sharp'\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('fs'\\).existsSync\\('node_modules/png-to-ico'\\), require\\('fs'\\).existsSync\\('node_modules/to-ico'\\)\\)\")",
+      "Bash(cat > *)",
+      "Bash(curl -s http://localhost:3000/icon.svg)",
+      "Bash(curl -s http://localhost:3000/login)",
+      "Bash(curl -s -i http://localhost:3000/icon.svg)",
+      "Bash(curl -s -i http://localhost:3000/next.svg)",
+      "Bash(curl -s -i http://localhost:3000/manifest.json)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/favicon.ico)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/dashboard)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(npx playwright *)",
+      "Bash(npx -y playwright@1.60.0 screenshot --viewport-size=420,700 http://localhost:3000/login login-check.png)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -r taskkill //PID //F)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }

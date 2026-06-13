@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Dark rounded background -->
-  <rect width="512" height="512" rx="90" fill="#1a1a1a"/>
+  <!-- White rounded background -->
+  <rect width="512" height="512" rx="100" fill="#FFFFFF"/>
 
   <!-- Circular arc: starts at ~1 o'clock (386,181), goes CW 300°, ends at 12 o'clock top (256,106) -->
   <!-- Center (256,256), radius 150, large-arc=1, sweep=1 (CW) -->
   <path d="M 386,181 A 150,150 0 1,1 256,106"
-        fill="none" stroke="#f5f0e8" stroke-width="36" stroke-linecap="round"/>
+        fill="none" stroke="#FF6500" stroke-width="40" stroke-linecap="round"/>
 
   <!-- Arrowhead at top (256,106) pointing rightward — clockwise direction -->
-  <polygon points="256,106 200,72 200,140" fill="#f5f0e8"/>
+  <polygon points="256,106 196,70 196,142" fill="#FF6500"/>
 
-  <!-- Red accent dot at the arc tail (start point ~1 o'clock) -->
-  <circle cx="386" cy="181" r="24" fill="#c0392b"/>
+  <!-- Dark accent dot at the arc tail (start point ~1 o'clock) -->
+  <circle cx="386" cy="181" r="26" fill="#111827"/>
 </svg>

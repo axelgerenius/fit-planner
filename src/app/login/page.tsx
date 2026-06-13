@@ -42,6 +42,7 @@ export default function LoginPage() {
       <div style={{ width: "100%", maxWidth: 400 }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <img src="/icon.svg" alt="VitaLoop" width={64} height={64} style={{ borderRadius: 16, border: "1px solid #E5E7EB", marginBottom: 12 }} />
           <h1 style={{ fontSize: 44, fontWeight: 800, lineHeight: 1, color: "#111827", letterSpacing: 0.5 }}>
             VITA<span style={{ color: "#FF6500" }}>LOOP</span>
           </h1>

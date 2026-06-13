@@ -4,8 +4,8 @@
   "description": "Sport & Nutrition personnalisés",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#f5f0e8",
-  "theme_color": "#1a1a1a",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF6500",
   "orientation": "portrait-primary",
   "icons": [
     {

@@ -97,7 +97,8 @@ export default function AppNav({ user }: { user: { name: string; email: string }
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
           {/* Logo */}
-          <Link href="/dashboard" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 2 }}>
+          <Link href="/dashboard" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
+            <img src="/icon.svg" alt="" width={28} height={28} style={{ borderRadius: 8, border: `1px solid ${BORDER}` }} />
             <span style={{ fontFamily: "var(--font-bebas), 'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, color: DARK }}>
               VITA<span style={{ color: PRIMARY }}>LOOP</span>
             </span>
