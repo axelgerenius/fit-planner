@@ -30,7 +30,9 @@
       "Bash(node -e ' *)",
       "Bash(DATABASE_URL=postgresql://postgres:n94DBeYuuBXjUIEC@db.mesdyebchkxfhfsgvobx.supabase.co:5432/postgres node -e ' *)",
       "Bash(npx tsx -e ' *)",
-      "Bash(npx tsx *)"
+      "Bash(npx tsx *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)"
     ]
   }
 }
