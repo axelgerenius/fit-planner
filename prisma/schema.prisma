@@ -97,6 +97,11 @@ enum Goal {
   FAT_LOSS
   STAY_FIT
   GENTLE_RETURN
+  FULL_STRENGTH
+  RUNNING
+  CYCLING
+  CROSSFIT_HYROX
+  MARTIAL_ARTS
 }
 
 enum Diet {
@@ -171,6 +176,10 @@ enum SessionType {
   YOGA_STRETCH
   FULL_BODY
   REST
+  RUNNING
+  CYCLING
+  CROSSFIT
+  MARTIAL_ARTS
 }
 
 model Exercise {

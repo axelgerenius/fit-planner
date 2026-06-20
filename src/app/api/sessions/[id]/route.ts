@@ -13,7 +13,7 @@ const exerciseSchema = z.object({
 
 const schema = z.object({
   name: z.string().min(1).max(80),
-  type: z.enum(["STRENGTH", "CARDIO", "HIIT", "YOGA_STRETCH", "FULL_BODY", "REST"]),
+  type: z.enum(["STRENGTH", "CARDIO", "HIIT", "YOGA_STRETCH", "FULL_BODY", "REST", "RUNNING", "CYCLING", "CROSSFIT", "MARTIAL_ARTS"]),
   icon: z.string().max(10).optional().nullable(),
   notes: z.string().max(2000).optional().nullable(),
   durationMin: z.coerce.number().int().min(5).max(300).optional(),

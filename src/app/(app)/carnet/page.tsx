@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import EditLogModal from "@/components/edit-log-modal";
 
 type LogExercise = { id: string; name: string; sets?: number | null; reps?: string | null; weightKg?: number | null; restSec?: number | null };
 type WorkoutLog = {
@@ -26,11 +27,13 @@ function fmtMonth(iso: string) {
 const SESSION_BORDER: Record<string, string> = {
   STRENGTH: "#1E3A8A", CARDIO: "#FF6500", HIIT: "#EF4444",
   YOGA_STRETCH: "#6B7280", FULL_BODY: "#22C55E", REST: "#E5E7EB",
+  RUNNING: "#0EA5E9", CYCLING: "#8B5CF6", CROSSFIT: "#F59E0B", MARTIAL_ARTS: "#DC2626",
 };
 
 const SESSION_ICONS: Record<string, string> = {
   STRENGTH: "🏋️", CARDIO: "🏃", HIIT: "🔥",
   YOGA_STRETCH: "🧘", FULL_BODY: "💪", REST: "🛌",
+  RUNNING: "🏃", CYCLING: "🚴", CROSSFIT: "🔗", MARTIAL_ARTS: "🥋",
 };
 
 export default function CarnetPage() {
@@ -38,6 +41,8 @@ export default function CarnetPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [editingLog, setEditingLog] = useState<WorkoutLog | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function loadLogs(offset = 0) {
     const res = await fetch(`/api/workout-logs?limit=20&offset=${offset}`);
@@ -56,6 +61,26 @@ export default function CarnetPage() {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Supprimer cette séance du carnet ?")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/workout-logs/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setLogs(prev => prev.filter(l => l.id !== id));
+      setTotal(prev => prev - 1);
+    } catch {
+      alert("Impossible de supprimer cette séance.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  function handleSaved(updated: WorkoutLog) {
+    setLogs(prev => prev.map(l => l.id === updated.id ? updated : l));
+    setEditingLog(null);
   }
 
   const grouped: { month: string; entries: WorkoutLog[] }[] = [];
@@ -158,6 +183,21 @@ export default function CarnetPage() {
                               &ldquo;{log.notes}&rdquo;
                             </p>
                           )}
+                          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                            <button
+                              onClick={() => setEditingLog(log)}
+                              style={{ fontSize: 12, fontWeight: 700, padding: "8px 14px", borderRadius: 10, border: "1.5px solid #E5E7EB", background: "#fff", color: "#6B7280", cursor: "pointer", flex: 1 }}
+                            >
+                              ✏️ Modifier
+                            </button>
+                            <button
+                              onClick={() => handleDelete(log.id)}
+                              disabled={deletingId === log.id}
+                              style={{ fontSize: 12, fontWeight: 700, padding: "8px 14px", borderRadius: 10, border: "1.5px solid #FEE2E2", background: "#fff", color: "#EF4444", cursor: deletingId === log.id ? "default" : "pointer", flex: 1, opacity: deletingId === log.id ? 0.6 : 1 }}
+                            >
+                              {deletingId === log.id ? "Suppression…" : "🗑️ Supprimer"}
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -176,6 +216,14 @@ export default function CarnetPage() {
             </button>
           )}
         </>
+      )}
+
+      {editingLog && (
+        <EditLogModal
+          log={editingLog}
+          onClose={() => setEditingLog(null)}
+          onSaved={handleSaved}
+        />
       )}
     </div>
   );

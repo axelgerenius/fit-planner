@@ -18,10 +18,12 @@ const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 const SESSION_LABELS: Record<string, string> = {
   STRENGTH: "Force", CARDIO: "Cardio", HIIT: "HIIT",
   YOGA_STRETCH: "Yoga / Étirements", FULL_BODY: "Full Body", REST: "Repos",
+  RUNNING: "Running", CYCLING: "Cyclisme", CROSSFIT: "CrossFit / HYROX", MARTIAL_ARTS: "Arts Martiaux",
 };
 const SESSION_ICONS: Record<string, string> = {
   STRENGTH: "🏋️", CARDIO: "🏃", HIIT: "🔥",
   YOGA_STRETCH: "🧘", FULL_BODY: "💪", REST: "🛌",
+  RUNNING: "🏃", CYCLING: "🚴", CROSSFIT: "🔗", MARTIAL_ARTS: "🥋",
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────

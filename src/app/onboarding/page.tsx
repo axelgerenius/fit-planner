@@ -4,10 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const GOALS = [
-  { value: "MUSCLE_GAIN", label: "Prise de masse", icon: "🏋️", desc: "Augmenter ma masse musculaire" },
-  { value: "FAT_LOSS", label: "Perte de gras", icon: "🔥", desc: "Perdre du poids et affiner ma silhouette" },
-  { value: "STAY_FIT", label: "Rester en forme", icon: "⚡", desc: "Maintenir ma condition physique" },
-  { value: "GENTLE_RETURN", label: "Reprise douce", icon: "🌱", desc: "Reprendre le sport progressivement" },
+  { value: "MUSCLE_GAIN",    label: "Prise de masse",       icon: "🏋️",  desc: "Augmenter ma masse musculaire" },
+  { value: "FAT_LOSS",       label: "Perte de gras",         icon: "🔥",  desc: "Perdre du poids et affiner ma silhouette" },
+  { value: "STAY_FIT",       label: "Rester en forme",       icon: "⚡",  desc: "Maintenir ma condition physique" },
+  { value: "GENTLE_RETURN",  label: "Reprise douce",         icon: "🌱",  desc: "Reprendre le sport progressivement" },
+  { value: "FULL_STRENGTH",  label: "Full Musculation",      icon: "💪",  desc: "Programme force pure – Push/Pull/Legs intensif" },
+  { value: "RUNNING",        label: "Running",               icon: "🏃",  desc: "Course à pied – endurance, fractionné, longue sortie" },
+  { value: "CYCLING",        label: "Vélo / Cyclisme",       icon: "🚴",  desc: "Programme cyclisme – endurance et puissance" },
+  { value: "CROSSFIT_HYROX", label: "CrossFit / HYROX",     icon: "🔗",  desc: "Fitness fonctionnel et préparation HYROX" },
+  { value: "MARTIAL_ARTS",   label: "Arts Martiaux",         icon: "🥋",  desc: "Technique, conditionnement et sparring" },
 ];
 
 const LEVELS = [

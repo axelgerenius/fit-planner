@@ -8,10 +8,12 @@ import LogSessionModal from "@/components/log-session-modal";
 const SESSION_ICONS: Record<string, string> = {
   STRENGTH: "🏋️", CARDIO: "🏃", HIIT: "🔥",
   YOGA_STRETCH: "🧘", FULL_BODY: "💪", REST: "🛌",
+  RUNNING: "🏃", CYCLING: "🚴", CROSSFIT: "🔗", MARTIAL_ARTS: "🥋",
 };
 const SESSION_LABELS: Record<string, string> = {
   STRENGTH: "Force", CARDIO: "Cardio", HIIT: "HIIT",
   YOGA_STRETCH: "Yoga", FULL_BODY: "Full Body", REST: "Repos",
+  RUNNING: "Running", CYCLING: "Cyclisme", CROSSFIT: "CrossFit / HYROX", MARTIAL_ARTS: "Arts Martiaux",
 };
 const BADGE: Record<string, { bg: string; fg: string }> = {
   STRENGTH:     { bg: "#1E3A8A", fg: "#fff" },
@@ -20,10 +22,15 @@ const BADGE: Record<string, { bg: string; fg: string }> = {
   YOGA_STRETCH: { bg: "#6B7280", fg: "#fff" },
   FULL_BODY:    { bg: "#22C55E", fg: "#fff" },
   REST:         { bg: "#E5E7EB", fg: "#6B7280" },
+  RUNNING:      { bg: "#0EA5E9", fg: "#fff" },
+  CYCLING:      { bg: "#8B5CF6", fg: "#fff" },
+  CROSSFIT:     { bg: "#F59E0B", fg: "#fff" },
+  MARTIAL_ARTS: { bg: "#DC2626", fg: "#fff" },
 };
 const BORDER: Record<string, string> = {
   STRENGTH: "#1E3A8A", CARDIO: "#FF6500", HIIT: "#EF4444",
   YOGA_STRETCH: "#6B7280", FULL_BODY: "#22C55E", REST: "#E5E7EB",
+  RUNNING: "#0EA5E9", CYCLING: "#8B5CF6", CROSSFIT: "#F59E0B", MARTIAL_ARTS: "#DC2626",
 };
 
 type Exercise = {
@@ -70,6 +77,9 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel,
   const [logOpen, setLogOpen] = useState(false);
   const [isDone, setIsDone] = useState(s.completed);
   const [undoing, setUndoing] = useState(false);
+  const [postponeConfirm, setPostponeConfirm] = useState(false);
+  const [postponing, setPostponing] = useState(false);
+  const [postponeError, setPostponeError] = useState("");
   useEffect(() => { setIsDone(s.completed); }, [s.completed]);
 
   const badge = BADGE[s.type] ?? BADGE.REST;
@@ -86,6 +96,21 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel,
       router.refresh();
     }
     setUndoing(false);
+  }
+
+  async function handlePostpone() {
+    setPostponing(true);
+    setPostponeError("");
+    try {
+      const res = await fetch(`/api/sessions/${s.id}/postpone`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Erreur");
+      setPostponeConfirm(false);
+      router.refresh();
+    } catch (err) {
+      setPostponeError(String(err).replace("Error: ", ""));
+      setPostponing(false);
+    }
   }
 
   const cardBase: React.CSSProperties = {
@@ -132,6 +157,36 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel,
     color: "#6B7280", cursor: "pointer",
   };
 
+  const canPostpone = s.type !== "REST" && !isDone;
+
+  function PostponeConfirmPanel() {
+    return (
+      <div style={{ marginTop: 10, padding: "10px 12px", background: "#F5F3FF", borderRadius: 10, border: "1px solid #DDD6FE" }}>
+        <p style={{ fontSize: 13, color: "#6D28D9", marginBottom: 8, lineHeight: 1.5 }}>
+          Les exercices de cette séance seront intégrés en superset sur la prochaine séance d&apos;entraînement disponible. Cette séance deviendra un jour de repos.
+        </p>
+        {postponeError && (
+          <p style={{ fontSize: 12, color: "#EF4444", marginBottom: 8 }}>{postponeError}</p>
+        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={() => { setPostponeConfirm(false); setPostponeError(""); }}
+            style={{ ...outlineBtn, flex: 1, textAlign: "center" }}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handlePostpone}
+            disabled={postponing}
+            style={{ flex: 1, fontSize: 12, fontWeight: 700, padding: "7px 14px", borderRadius: 8, border: "none", background: postponing ? "#C4B5FD" : "#7C3AED", color: "#fff", cursor: postponing ? "default" : "pointer" }}
+          >
+            {postponing ? "Report…" : "Confirmer"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   function ActionRow() {
     if (s.type === "REST") {
       return (
@@ -141,25 +196,36 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel,
       );
     }
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <button onClick={() => setEditOpen(true)} style={outlineBtn}>✏️ Modifier</button>
-        <button onClick={() => setDetailOpen(true)} style={outlineBtn}>👁 Détails</button>
-        <div style={{ marginLeft: "auto" }}>
-          {isFuture && !isDone ? (
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#D1D5DB", padding: "7px 12px", borderRadius: 8, border: "1px solid #E5E7EB", display: "inline-block" }}>
-              Démarrer
-            </span>
-          ) : isDone ? (
-            <button onClick={handleUndo} disabled={undoing} style={{ fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "1px solid #6B7280", background: "transparent", color: "#6B7280", cursor: "pointer", opacity: undoing ? 0.5 : 1 }}>
-              {undoing ? "…" : "↩ Annuler"}
-            </button>
-          ) : (
-            <button onClick={() => setLogOpen(true)} style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", borderRadius: 8, border: "none", background: "#22C55E", color: "#fff", cursor: "pointer" }}>
-              ▶ Démarrer
+      <>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button onClick={() => setEditOpen(true)} style={outlineBtn}>✏️ Modifier</button>
+          <button onClick={() => setDetailOpen(true)} style={outlineBtn}>👁 Détails</button>
+          {canPostpone && !postponeConfirm && (
+            <button
+              onClick={() => { setPostponeConfirm(true); setPostponeError(""); }}
+              style={{ ...outlineBtn, color: "#7C3AED", borderColor: "#DDD6FE" }}
+            >
+              ⏭ Reporter
             </button>
           )}
+          <div style={{ marginLeft: "auto" }}>
+            {isFuture && !isDone ? (
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#D1D5DB", padding: "7px 12px", borderRadius: 8, border: "1px solid #E5E7EB", display: "inline-block" }}>
+                Démarrer
+              </span>
+            ) : isDone ? (
+              <button onClick={handleUndo} disabled={undoing} style={{ fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "1px solid #6B7280", background: "transparent", color: "#6B7280", cursor: "pointer", opacity: undoing ? 0.5 : 1 }}>
+                {undoing ? "…" : "↩ Annuler"}
+              </button>
+            ) : (
+              <button onClick={() => setLogOpen(true)} style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", borderRadius: 8, border: "none", background: "#22C55E", color: "#fff", cursor: "pointer" }}>
+                ▶ Démarrer
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+        {postponeConfirm && <PostponeConfirmPanel />}
+      </>
     );
   }
 
@@ -340,6 +406,26 @@ export default function SessionCard({ session: s, isToday, todayIndex, dayLabel,
                   )
                 )}
               </div>
+
+              {/* Reporter */}
+              {canPostpone && (
+                <div style={{ marginTop: 10 }}>
+                  {!postponeConfirm ? (
+                    <button
+                      onClick={() => { setPostponeConfirm(true); setPostponeError(""); }}
+                      style={{
+                        width: "100%", padding: "12px 8px", borderRadius: 12,
+                        border: "1.5px solid #DDD6FE", background: "transparent",
+                        color: "#7C3AED", fontWeight: 700, fontSize: 14, cursor: "pointer",
+                      }}
+                    >
+                      ⏭ Reporter cette séance
+                    </button>
+                  ) : (
+                    <PostponeConfirmPanel />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
