@@ -278,7 +278,7 @@ export default function DashboardClient({
         </Card>
       </div>
 
-      {/* ═══ HABITUDES + NUTRITION ══════════════════════════════════════════ */}
+      {/* ═══ HABITUDES + PROGRESSION ════════════════════════════════════════ */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
 
         {/* Habitudes */}
@@ -328,77 +328,82 @@ export default function DashboardClient({
           </Link>
         </Card>
 
-        {/* Nutrition */}
+        {/* Progression — compact vertical */}
         <Card style={{ padding: 16 }}>
-          <SectionLabel>Nutrition du jour</SectionLabel>
-          {menu ? (
-            <>
-              <p style={{ fontSize: 22, fontWeight: 800, color: D, marginBottom: 12, lineHeight: 1 }}>
-                {Math.round(menu.totalCalories)}
-                <span style={{ fontSize: 12, fontWeight: 400, color: GR }}> kcal</span>
+          <SectionLabel>Progression</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+            <div>
+              <p style={{ fontSize: 20, fontWeight: 800, color: D, lineHeight: 1 }}>
+                {latestWeight ?? "—"}
+                {latestWeight && <span style={{ fontSize: 11, fontWeight: 400, color: GR }}> kg</span>}
               </p>
+              {weightDelta !== null ? (
+                <p style={{ fontSize: 11, fontWeight: 700, marginTop: 2, color: weightDelta < 0 ? G : "#EF4444" }}>
+                  {weightDelta > 0 ? "+" : ""}{weightDelta} kg cette sem.
+                </p>
+              ) : (
+                <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>vs sem. dernière</p>
+              )}
+            </div>
+
+            <div style={{ height: 1, background: BD }} />
+
+            <div>
+              <p style={{ fontSize: 18, fontWeight: 800, color: D, lineHeight: 1 }}>
+                🔥 {totalSessionCount}
+              </p>
+              <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>séances réalisées</p>
+            </div>
+
+            <div style={{ height: 1, background: BD }} />
+
+            <div>
+              <p style={{ fontSize: 16, fontWeight: 800, color: P, lineHeight: 1 }}>
+                🏆 Niv. {level}
+              </p>
+              <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>niveau actuel</p>
+              <div style={{ height: 4, background: LG, borderRadius: 2, overflow: "hidden", marginTop: 5 }}>
+                <div style={{ height: "100%", width: `${xpPct}%`, background: P, borderRadius: 2 }} />
+              </div>
+              <p style={{ fontSize: 9, color: GR, marginTop: 3 }}>{totalXP % 500} / 500 XP</p>
+            </div>
+
+          </div>
+        </Card>
+      </div>
+
+      {/* ═══ NUTRITION DU JOUR ═══════════════════════════════════════════════ */}
+      <Card style={{ padding: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <SectionLabel>Nutrition du jour</SectionLabel>
+          <Link href="/nutrition" style={{ fontSize: 10, fontWeight: 700, color: P, textDecoration: "none", letterSpacing: 0.5 }}>
+            VOIR LE MENU
+          </Link>
+        </div>
+        {menu ? (
+          <>
+            <p style={{ fontSize: 30, fontWeight: 800, color: D, lineHeight: 1, marginBottom: 16 }}>
+              {Math.round(menu.totalCalories)}
+              <span style={{ fontSize: 14, fontWeight: 400, color: GR }}> kcal</span>
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               {[
                 { emoji: "🥩", label: "Protéines",  val: Math.round(menu.totalProtein) },
                 { emoji: "🍚", label: "Glucides",   val: Math.round(menu.totalCarbs) },
                 { emoji: "🥑", label: "Lipides",    val: Math.round(menu.totalFat) },
               ].map(m => (
-                <div key={m.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 7 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <span style={{ fontSize: 12 }}>{m.emoji}</span>
-                    <span style={{ fontSize: 11, color: GR }}>{m.label}</span>
-                  </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: P }}>{m.val} g</span>
+                <div key={m.label} style={{ background: LG, borderRadius: 12, padding: "10px 8px", textAlign: "center" }}>
+                  <p style={{ fontSize: 18, marginBottom: 2 }}>{m.emoji}</p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: D, lineHeight: 1 }}>{m.val}</p>
+                  <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>g {m.label}</p>
                 </div>
               ))}
-              <Link href="/nutrition" style={{ fontSize: 10, fontWeight: 700, color: P, textDecoration: "none", letterSpacing: 0.5, display: "block", marginTop: 8 }}>
-                VOIR LE MENU
-              </Link>
-            </>
-          ) : (
-            <p style={{ fontSize: 11, color: GR }}>Aucun menu configuré.</p>
-          )}
-        </Card>
-      </div>
-
-      {/* ═══ VOTRE PROGRESSION ═══════════════════════════════════════════════ */}
-      <Card style={{ padding: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: 18 }}>📈</span>
-          <SectionLabel>Votre progression</SectionLabel>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, textAlign: "center" }}>
-
-          {/* Poids */}
-          <div>
-            <p style={{ fontSize: 24, fontWeight: 800, color: D, lineHeight: 1 }}>
-              {latestWeight ?? "—"}
-            </p>
-            {latestWeight && (
-              <p style={{ fontSize: 11, color: GR }}>kg</p>
-            )}
-            {weightDelta !== null && (
-              <p style={{ fontSize: 11, fontWeight: 700, marginTop: 2, color: weightDelta < 0 ? G : "#EF4444" }}>
-                {weightDelta > 0 ? "+" : ""}{weightDelta} kg
-              </p>
-            )}
-            <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>vs semaine<br />dernière</p>
-          </div>
-
-          {/* Séances */}
-          <div style={{ borderLeft: `1px solid ${BD}`, borderRight: `1px solid ${BD}` }}>
-            <p style={{ fontSize: 24, fontWeight: 800, color: D, lineHeight: 1 }}>🔥</p>
-            <p style={{ fontSize: 18, fontWeight: 800, color: D }}>{totalSessionCount}</p>
-            <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>séances<br />réalisées</p>
-          </div>
-
-          {/* Niveau */}
-          <div>
-            <p style={{ fontSize: 24, fontWeight: 800, color: D, lineHeight: 1 }}>🏆</p>
-            <p style={{ fontSize: 18, fontWeight: 800, color: P }}>Niv. {level}</p>
-            <p style={{ fontSize: 10, color: GR, marginTop: 2 }}>niveau<br />actuel</p>
-          </div>
-
-        </div>
+            </div>
+          </>
+        ) : (
+          <p style={{ fontSize: 12, color: GR }}>Aucun menu configuré.</p>
+        )}
       </Card>
 
     </div>
