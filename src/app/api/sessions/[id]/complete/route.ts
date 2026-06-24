@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -31,6 +32,15 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       completedAt: newState ? new Date() : null,
     },
   });
+
+  if (newState) {
+    await notify(session.user.id, {
+      type: "SESSION_COMPLETED",
+      title: "Séance effectuée",
+      message: `"${workoutSession.name}" a été marquée comme effectuée. Bravo !`,
+      link: "/planning",
+    });
+  }
 
   return NextResponse.json({ completed: newState });
 }

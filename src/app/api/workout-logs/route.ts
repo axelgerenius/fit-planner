@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 import { z } from "zod";
 
 const exerciseSchema = z.object({
@@ -59,6 +60,13 @@ export async function POST(req: Request) {
         },
       },
       include: { exercises: true },
+    });
+
+    await notify(session.user.id, {
+      type: "WORKOUT_LOGGED",
+      title: "Séance enregistrée",
+      message: `"${log.sessionName}" a bien été ajoutée à ton carnet.`,
+      link: "/carnet",
     });
 
     return NextResponse.json(log, { status: 201 });
