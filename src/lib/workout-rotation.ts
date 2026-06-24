@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getWorkoutTemplate } from "@/lib/templates/workouts";
 import { getWeekStart } from "@/lib/week";
+import { notify } from "@/lib/notifications";
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
@@ -41,5 +42,12 @@ export async function ensureCurrentWeekPlan(userId: string) {
         },
       },
     });
+  });
+
+  await notify(userId, {
+    type: "WORKOUT_ROTATION",
+    title: "Nouveau programme de la semaine",
+    message: `Ton programme "${template.name}" a été mis à jour pour cette semaine.`,
+    link: "/planning",
   });
 }

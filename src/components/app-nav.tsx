@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const PRIMARY = "#FF6500";
 const DARK = "#111827";
@@ -75,6 +75,25 @@ function BellIcon() {
   );
 }
 
+type NotificationItem = {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  link: string | null;
+  read: boolean;
+  createdAt: string;
+};
+
+function relativeTime(iso: string) {
+  const min = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (min < 1) return "à l'instant";
+  if (min < 60) return `il y a ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `il y a ${h} h`;
+  return `il y a ${Math.floor(h / 24)} j`;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AppNav({ user }: { user: { name: string; email: string } }) {
@@ -82,6 +101,51 @@ export default function AppNav({ user }: { user: { name: string; email: string }
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sportSubOpen, setSportSubOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      try {
+        const res = await fetch("/api/notifications");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (active) {
+          setNotifications(data.items);
+          setUnreadCount(data.unreadCount);
+        }
+      } catch {}
+    }
+    load();
+    const interval = setInterval(load, 60000);
+    return () => { active = false; clearInterval(interval); };
+  }, []);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
+    }
+    if (notifOpen) document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, [notifOpen]);
+
+  function handleNotifClick(n: NotificationItem) {
+    if (!n.read) {
+      setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+      fetch(`/api/notifications/${n.id}/read`, { method: "POST" }).catch(() => {});
+    }
+    setNotifOpen(false);
+  }
+
+  function handleMarkAllRead() {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setUnreadCount(0);
+    fetch("/api/notifications/read-all", { method: "POST" }).catch(() => {});
+  }
 
   const initials = user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
   const isSportActive = pathname.startsWith("/planning") || pathname.startsWith("/carnet");
@@ -167,14 +231,80 @@ export default function AppNav({ user }: { user: { name: string; email: string }
 
           {/* Right: Bell + Avatar */}
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button style={{ background: "none", border: "none", cursor: "pointer", padding: 4, position: "relative" }}>
-              <BellIcon />
-              <span style={{
-                position: "absolute", top: 2, right: 2,
-                width: 8, height: 8, borderRadius: "50%",
-                background: PRIMARY, border: `1.5px solid ${WHITE}`,
-              }} />
-            </button>
+            <div ref={notifRef} style={{ position: "relative" }}>
+              <button onClick={() => setNotifOpen(o => !o)}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, position: "relative" }}>
+                <BellIcon />
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: "absolute", top: 2, right: 2,
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: PRIMARY, border: `1.5px solid ${WHITE}`,
+                  }} />
+                )}
+              </button>
+
+              {notifOpen && (
+                <div style={{
+                  position: "absolute", top: "100%", right: 0, marginTop: 8,
+                  width: 320, maxHeight: 420, overflowY: "auto",
+                  background: WHITE, border: `1px solid ${BORDER}`,
+                  borderRadius: 16, boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                  zIndex: 30,
+                }}>
+                  <div style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "14px 16px", borderBottom: `1px solid ${BORDER}`,
+                  }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: DARK }}>Notifications</p>
+                    {unreadCount > 0 && (
+                      <button onClick={handleMarkAllRead}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, color: PRIMARY }}>
+                        Tout marquer lu
+                      </button>
+                    )}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <p style={{ padding: "32px 16px", textAlign: "center", fontSize: 13, color: GRAY }}>
+                      Aucune notification
+                    </p>
+                  ) : (
+                    notifications.map(n => {
+                      const content = (
+                        <div style={{
+                          display: "flex", gap: 10, alignItems: "flex-start",
+                          padding: "12px 16px", borderBottom: `1px solid ${BORDER}`,
+                          background: n.read ? "transparent" : "#FFF3ED",
+                        }}>
+                          {!n.read && (
+                            <span style={{
+                              width: 7, height: 7, borderRadius: "50%",
+                              background: PRIMARY, marginTop: 5, flexShrink: 0,
+                            }} />
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: DARK }}>{n.title}</p>
+                            <p style={{ fontSize: 12, color: GRAY, marginTop: 2, lineHeight: 1.4 }}>{n.message}</p>
+                            <p style={{ fontSize: 11, color: GRAY, marginTop: 4, opacity: 0.8 }}>{relativeTime(n.createdAt)}</p>
+                          </div>
+                        </div>
+                      );
+                      return n.link ? (
+                        <Link key={n.id} href={n.link} onClick={() => handleNotifClick(n)} style={{ textDecoration: "none", display: "block" }}>
+                          {content}
+                        </Link>
+                      ) : (
+                        <button key={n.id} onClick={() => handleNotifClick(n)}
+                          style={{ background: "none", border: "none", padding: 0, width: "100%", textAlign: "left", cursor: "pointer", display: "block" }}>
+                          {content}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
 
             <button
               onClick={() => setDrawerOpen(true)}

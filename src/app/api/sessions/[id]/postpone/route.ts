@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 
 const DAY_LABELS: Record<number, string> = {
   0: "Lundi", 1: "Mardi", 2: "Mercredi", 3: "Jeudi",
@@ -113,6 +114,13 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
           icon: null,
         },
       });
+    });
+
+    await notify(authSession.user.id, {
+      type: "SESSION_POSTPONED",
+      title: "Séance reportée",
+      message: `"${workoutSession.name}" a été reportée et fusionnée avec "${targetSession.name}" (${DAY_LABELS[targetSession.dayOfWeek]}).`,
+      link: "/planning",
     });
 
     return NextResponse.json({

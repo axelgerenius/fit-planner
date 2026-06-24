@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { generateWeekMenus } from "@/lib/templates/nutrition";
 import { getWeekStart } from "@/lib/week";
+import { notify } from "@/lib/notifications";
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
@@ -56,5 +57,12 @@ export async function ensureCurrentWeekNutrition(userId: string) {
         },
       },
     });
+  });
+
+  await notify(userId, {
+    type: "NUTRITION_ROTATION",
+    title: "Nouveau menu de la semaine",
+    message: "Ton plan nutritionnel a été mis à jour pour cette semaine.",
+    link: "/nutrition",
   });
 }
