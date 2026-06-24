@@ -7,6 +7,11 @@ const GOAL_LABELS: Record<string, string> = {
   FAT_LOSS: "Perte de gras",
   STAY_FIT: "Rester en forme",
   GENTLE_RETURN: "Reprise douce",
+  FULL_STRENGTH: "Full musculation",
+  RUNNING: "Running",
+  CYCLING: "Cyclisme",
+  CROSSFIT_HYROX: "CrossFit / HYROX",
+  MARTIAL_ARTS: "Arts martiaux",
 };
 
 export default async function DashboardPage() {
@@ -128,7 +133,7 @@ export default async function DashboardPage() {
   return (
     <DashboardClient
       firstName={session?.user?.name?.split(" ")[0] ?? ""}
-      goalLabel={profile?.goal ? GOAL_LABELS[profile.goal].toUpperCase() : ""}
+      goalLabel={profile?.goal ? (GOAL_LABELS[profile.goal] ?? profile.goal).toUpperCase() : ""}
       todayIndex={todayIndex}
       totalHabits={totalHabits}
       streak={streak}
